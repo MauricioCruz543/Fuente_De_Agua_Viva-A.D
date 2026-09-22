@@ -1,0 +1,3351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fuente De Agua Viva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a2530;
+    --deep:#0e3c47;
+    --teal:#136b73;
+    --aqua:#5fd3c4;
+    --aqua-soft:#bfeee6;
+    --gold:#e8b75d;
+    --gold-soft:#f6dfb0;
+    --foam:#f3f8f7;
+    --sand:#fbf6ec;
+    --coral:#d9695a;
+    --ink-70: rgba(10,37,48,.7);
+    --ink-50: rgba(10,37,48,.5);
+    --radius: 18px;
+    --shadow: 0 10px 30px rgba(10,37,48,.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Work Sans', sans-serif;
+    background:var(--foam);
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-.01em;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace; letter-spacing:.02em;}
+  button{font-family:inherit; cursor:pointer;}
+  ::selection{background:var(--aqua-soft); color:var(--ink);}
+  a{color:inherit;}
+
+  /* ---------- utilities ---------- */
+  .hidden{display:none !important;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--teal);
+  }
+
+  /* ================= LOGIN ================= */
+  #login-screen{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:radial-gradient(120% 100% at 50% -10%, #123c47 0%, #0a2530 55%, #071820 100%);
+    overflow:hidden;
+    padding:24px;
+  }
+  #wave-canvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    opacity:.9;
+  }
+  .drift{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(2px);
+    background:radial-gradient(circle at 35% 30%, rgba(255,255,255,.55), rgba(95,211,196,.05) 70%);
+    opacity:.35;
+    animation:driftUp linear infinite;
+  }
+  @keyframes driftUp{
+    0%{ transform:translateY(0) translateX(0); opacity:0; }
+    10%{ opacity:.5; }
+    90%{ opacity:.35; }
+    100%{ transform:translateY(-115vh) translateX(var(--dx,20px)); opacity:0; }
+  }
+
+  .login-card{
+    position:relative;
+    z-index:3;
+    width:100%;
+    max-width:400px;
+    background:rgba(243,248,247,.08);
+    border:1px solid rgba(255,255,255,.14);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border-radius:26px;
+    padding:44px 36px 34px;
+    color:var(--foam);
+    box-shadow:0 30px 70px rgba(0,0,0,.35);
+    animation:riseIn .9s cubic-bezier(.16,.9,.35,1) both;
+  }
+  @keyframes riseIn{
+    from{ opacity:0; transform:translateY(28px) scale(.98); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+  }
+  .brand-mark{
+    width:56px; height:56px;
+    margin:0 auto 18px;
+    position:relative;
+  }
+  .brand-mark svg{ width:100%; height:100%; display:block; }
+  .login-card h1{
+    text-align:center;
+    font-size:26px;
+    margin:0 0 2px;
+    color:#fff;
+  }
+  .login-sub{
+    text-align:center;
+    font-size:13px;
+    color:var(--aqua-soft);
+    margin:0 0 30px;
+    line-height:1.5;
+  }
+  .field{ margin-bottom:16px; }
+  .field label{
+    display:block;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--aqua-soft);
+    margin-bottom:7px;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .field input, .field select{
+    width:100%;
+    padding:13px 14px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,.22);
+    background:rgba(255,255,255,.06);
+    color:#fff;
+    font-size:14px;
+    outline:none;
+    font-family:inherit;
+    transition:border-color .2s, background .2s;
+  }
+  .field select option{ color:#0a2530; }
+  .field input::placeholder{ color:rgba(255,255,255,.35); }
+  .field input:focus, .field select:focus{
+    border-color:var(--aqua);
+    background:rgba(255,255,255,.1);
+  }
+  .pass-wrap{ position:relative; }
+  .pass-wrap input{ padding-right:42px; }
+  .pass-toggle{
+    position:absolute; right:6px; top:50%; transform:translateY(-50%);
+    width:30px; height:30px; border:none; border-radius:8px;
+    background:transparent; color:rgba(255,255,255,.55);
+    font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:color .15s, background .15s;
+  }
+  .pass-toggle:hover{ background:rgba(255,255,255,.08); color:#fff; }
+  .pass-toggle.showing{ color:var(--aqua); }
+  .modal .pass-wrap input{ padding-right:42px; }
+  .modal .pass-toggle{ color:rgba(10,37,48,.4); }
+  .modal .pass-toggle:hover{ background:rgba(10,37,48,.06); color:var(--ink); }
+  .modal .pass-toggle.showing{ color:var(--teal); }
+  .pass-requirements{
+    list-style:none;
+    margin:9px 0 0;
+    padding:0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:5px 10px;
+  }
+  .pass-requirements li{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:11px;
+    line-height:1.3;
+    color:rgba(255,255,255,.4);
+    transition:color .15s;
+  }
+  .pass-requirements li .mark{
+    width:14px; height:14px;
+    flex-shrink:0;
+    border-radius:50%;
+    border:1.5px solid rgba(255,255,255,.3);
+    display:flex; align-items:center; justify-content:center;
+    transition:background .15s, border-color .15s;
+  }
+  .pass-requirements li .mark svg{ width:9px; height:9px; display:block; }
+  .pass-requirements li.met{ color:var(--aqua-soft); }
+  .pass-requirements li.met .mark{ background:var(--aqua); border-color:var(--aqua); color:#062026; }
+  .modal .pass-requirements li{ color:var(--ink-50); }
+  .modal .pass-requirements li .mark{ border-color:rgba(10,37,48,.2); }
+  .modal .pass-requirements li.met{ color:var(--ink); }
+  .modal .pass-requirements li.met .mark{ background:var(--teal); border-color:var(--teal); color:#fff; }
+  @media (max-width:420px){ .pass-requirements{ grid-template-columns:1fr; } }
+  .role-toggle{
+    display:flex;
+    gap:8px;
+    margin-bottom:22px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.14);
+    padding:5px;
+    border-radius:14px;
+  }
+  .role-toggle button{
+    flex:1;
+    padding:10px 8px;
+    border:none;
+    border-radius:10px;
+    background:transparent;
+    color:rgba(255,255,255,.6);
+    font-size:12.5px;
+    font-weight:600;
+    transition:background .2s, color .2s;
+  }
+  .role-toggle button.active{
+    background:linear-gradient(135deg, var(--aqua), var(--teal));
+    color:#062026;
+  }
+  .btn-primary{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg, var(--gold), #d99f3d);
+    color:#3a2705;
+    font-weight:700;
+    font-size:14.5px;
+    letter-spacing:.01em;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 10px 24px rgba(232,183,93,.25);
+    transition:transform .15s ease;
+  }
+  .btn-primary:active{ transform:scale(.98); }
+  .login-note{
+    margin-top:14px;
+    font-size:11.5px;
+    text-align:center;
+    color:rgba(255,255,255,.45);
+    line-height:1.5;
+  }
+  .register-switch{
+    margin:12px 0 0;
+    font-size:12.5px;
+    text-align:center;
+    color:rgba(255,255,255,.55);
+  }
+  .register-switch button{
+    background:none; border:none; padding:0;
+    color:var(--aqua); font-weight:600; font-size:12.5px;
+    text-decoration:underline; cursor:pointer;
+  }
+  .register-note{
+    margin:10px 0 0;
+    font-size:11.5px;
+    text-align:center;
+    color:rgba(255,255,255,.45);
+    line-height:1.5;
+  }
+  .login-error{
+    margin:10px 0 0;
+    font-size:12.5px;
+    text-align:center;
+    color:#ffb4a6;
+    font-weight:600;
+  }
+  .login-card.shake{ animation:shakeCard .4s; }
+  @keyframes shakeCard{
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(-7px); }
+    40%{ transform:translateX(6px); }
+    60%{ transform:translateX(-4px); }
+    80%{ transform:translateX(3px); }
+  }
+  .demo-box{
+    margin-top:18px;
+    padding:14px 14px 6px;
+    border-radius:14px;
+    background:rgba(255,255,255,.05);
+    border:1px dashed rgba(255,255,255,.2);
+  }
+  .demo-box-label{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:rgba(255,255,255,.4);
+    margin-bottom:10px;
+  }
+  .demo-chip{
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    padding:9px 12px;
+    margin-bottom:8px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.04);
+    color:#fff;
+    text-align:left;
+    transition:background .15s, border-color .15s;
+  }
+  .demo-chip:hover{ background:rgba(95,211,196,.14); border-color:var(--aqua); }
+  .demo-chip-role{ font-size:12px; font-weight:600; }
+  .demo-chip-mail{ font-size:10.5px; font-family:'IBM Plex Mono', monospace; color:rgba(255,255,255,.5); }
+  .ripple-span{
+    position:absolute;
+    border-radius:50%;
+    background:rgba(255,255,255,.55);
+    transform:scale(0);
+    animation:rippleAnim .6s ease-out forwards;
+    pointer-events:none;
+  }
+  @keyframes rippleAnim{
+    to{ transform:scale(2.6); opacity:0; }
+  }
+  .verse{
+    position:absolute;
+    bottom:26px;
+    left:0; right:0;
+    text-align:center;
+    z-index:2;
+    color:rgba(255,255,255,.5);
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:13px;
+    padding:0 20px;
+  }
+
+  /* ================= APP SHELL ================= */
+  #app-shell{ display:flex; height:100vh; overflow:hidden; }
+  .sidebar{
+    width:236px;
+    flex-shrink:0;
+    background:linear-gradient(180deg, var(--ink), var(--deep));
+    color:var(--foam);
+    display:flex;
+    flex-direction:column;
+    padding:26px 18px;
+    position:relative;
+    height:100vh;
+    overflow-y:auto;
+  }
+  .sb-brand{
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:34px;
+    padding-left:4px;
+  }
+  .sb-brand svg{ width:30px; height:30px; }
+  .sb-brand span{
+    font-family:'Fraunces', serif;
+    font-size:15.5px;
+    font-weight:600;
+    line-height:1.15;
+  }
+  .nav-group{ margin-bottom:22px; }
+  .nav-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,.35);
+    padding:0 12px;
+    margin-bottom:8px;
+  }
+  .nav-item{
+    display:flex; align-items:center; gap:10px;
+    width:100%;
+    padding:10px 12px;
+    border:none;
+    background:transparent;
+    color:rgba(255,255,255,.72);
+    border-radius:10px;
+    font-size:13.5px;
+    text-align:left;
+    margin-bottom:2px;
+    transition:background .15s, color .15s;
+  }
+  .nav-item:hover{ background:rgba(255,255,255,.06); color:#fff; }
+  .nav-item.active{
+    background:rgba(95,211,196,.14);
+    color:var(--aqua-soft);
+    box-shadow:inset 3px 0 0 var(--aqua);
+  }
+  .nav-item svg{ width:16px; height:16px; flex-shrink:0; }
+  .nav-badge{
+    margin-left:auto;
+    background:rgba(95,211,196,.18);
+    color:var(--aqua-soft);
+    font-size:11px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:999px;
+    line-height:1.4;
+  }
+  .sb-footer{
+    margin-top:auto;
+    border-top:1px solid rgba(255,255,255,.1);
+    padding-top:16px;
+  }
+  .user-chip{
+    display:flex; align-items:center; gap:10px;
+    padding:8px 10px;
+    border-radius:12px;
+    background:rgba(255,255,255,.05);
+    margin-bottom:8px;
+  }
+  .avatar{
+    width:34px;height:34px;border-radius:50%;
+    background:linear-gradient(135deg, var(--gold), var(--aqua));
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; color:#0a2530; font-size:13px; flex-shrink:0;
+  }
+  .user-chip .u-name{ font-size:12.5px; font-weight:600; color:#fff; }
+  .user-chip .u-role{ font-size:10.5px; color:var(--aqua-soft); }
+  .logout-btn{
+    width:100%;
+    padding:9px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,.15);
+    background:transparent;
+    color:rgba(255,255,255,.6);
+    font-size:12px;
+  }
+  .logout-btn:hover{ color:#fff; border-color:rgba(255,255,255,.3); }
+
+  .main{ flex:1; min-width:0; padding:32px 40px 60px; width:100%; max-width:1180px; height:100vh; overflow-y:auto; }
+  .topbar{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin-bottom:26px; flex-wrap:wrap; gap:12px;
+  }
+  .topbar h1{ font-size:26px; margin:0; }
+  .topbar .eyebrow{ margin-bottom:6px; display:block; }
+  .add-btn{
+    padding:10px 18px;
+    border-radius:11px;
+    border:none;
+    background:var(--ink);
+    color:var(--foam);
+    font-size:13px;
+    font-weight:600;
+    display:flex; align-items:center; gap:6px;
+  }
+  .add-btn:hover{ background:var(--deep); }
+
+  /* dashboard stat cards */
+  .stat-row{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:30px; }
+  .stat-card{
+    background:#fff; border-radius:var(--radius); padding:18px 20px;
+    box-shadow:var(--shadow); border:1px solid rgba(10,37,48,.05);
+  }
+  .stat-card .num{ font-family:'Fraunces', serif; font-size:30px; font-weight:600; color:var(--teal); }
+  .stat-card .lbl{ font-size:12px; color:var(--ink-50); margin-top:2px; }
+
+  .panel-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:16px; }
+  .oficina-tabs{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:4px; }
+  .oficina-tab{
+    border:1px solid rgba(10,37,48,.14); background:#fff; color:var(--ink-70);
+    padding:9px 14px; border-radius:999px; font-size:12.5px; font-weight:600; cursor:pointer;
+    transition:background .15s, color .15s, border-color .15s;
+  }
+  .oficina-tab:hover{ border-color:var(--teal); color:var(--ink); }
+  .oficina-tab.active{ background:var(--ink); color:#fff; border-color:var(--ink); }
+  .confidential-note{
+    background:rgba(232,183,93,.14); border:1px dashed var(--gold);
+    border-radius:12px; padding:14px 16px; font-size:13px; color:var(--ink-70); margin-bottom:16px;
+  }
+  .diezmo-summary{ display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+  .diezmo-summary .stat-card{
+    min-width:160px;
+    transition:transform .2s ease, box-shadow .2s ease;
+    position:relative; overflow:hidden;
+  }
+  .diezmo-summary .stat-card:hover{ transform:translateY(-3px); box-shadow:0 14px 34px rgba(10,37,48,.16); }
+  .diezmo-summary .stat-card.ingreso{ background:linear-gradient(135deg, #eafaf3, #ffffff); border-color:rgba(95,211,196,.35); }
+  .diezmo-summary .stat-card.ingreso .num{ color:#0e8f6f; }
+  .diezmo-summary .stat-card.gasto{ background:linear-gradient(135deg, #fdf0ee, #ffffff); border-color:rgba(217,105,90,.3); }
+  .diezmo-summary .stat-card.gasto .num{ color:var(--coral); }
+  .diezmo-summary .stat-card.balance{ background:linear-gradient(135deg, #fff8e8, #ffffff); border-color:rgba(232,183,93,.4); }
+  .diezmo-summary .stat-card.balance .num{ color:#a9760f; }
+  .cat-badge{
+    display:inline-flex; align-items:center; gap:4px;
+    font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px;
+    background:var(--sand); color:var(--ink-70);
+  }
+  .cat-badge.diezmo{ background:#e3f7f0; color:#0e8f6f; }
+  .cat-badge.ofrenda{ background:#eef4fb; color:#2c6ea6; }
+  .cat-badge.gasto{ background:#fdf0ee; color:var(--coral); }
+  .cat-badge.compra{ background:#f4eefc; color:#7a4fc4; }
+  .cat-badge.prestamo{ background:#fff8e8; color:#a9760f; }
+  .prestamo-pendiente{ border-left:3px solid var(--gold); }
+  .prestamo-devuelto{ border-left:3px solid #0e8f6f; }
+  .seg-filter{
+    position:relative;
+    display:flex;
+    background:rgba(10,37,48,.06);
+    border-radius:12px;
+    padding:4px;
+    margin-bottom:18px;
+    gap:2px;
+  }
+  .seg-filter-thumb{
+    position:absolute;
+    top:4px; left:4px; bottom:4px;
+    width:calc((100% - 8px) / var(--seg-count));
+    background:#fff;
+    border-radius:9px;
+    box-shadow:0 1px 4px rgba(10,37,48,.14);
+    transition:transform .28s cubic-bezier(.4,0,.2,1);
+    transform:translateX(calc(var(--seg-idx) * 100%));
+  }
+  .seg-filter-btn{
+    position:relative;
+    z-index:1;
+    flex:1;
+    border:none;
+    background:transparent;
+    padding:9px 10px;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--ink-70);
+    border-radius:9px;
+    cursor:pointer;
+    transition:color .2s;
+    white-space:nowrap;
+  }
+  .seg-filter-btn.active{ color:var(--ink); }
+  .seg-filter-btn:hover{ color:var(--ink); }
+  .celula-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:900px; align-items:start; }
+  @media (max-width: 720px){ .celula-grid{ grid-template-columns:1fr; } }
+  .card{
+    background:#fff; border-radius:var(--radius); padding:20px;
+    box-shadow:var(--shadow); border:1px solid rgba(10,37,48,.05);
+    display:flex; flex-direction:column; gap:8px;
+    position:relative;
+  }
+  .card .tag{
+    align-self:flex-start;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px; text-transform:uppercase; letter-spacing:.08em;
+    background:var(--aqua-soft); color:var(--teal);
+    padding:4px 9px; border-radius:20px;
+  }
+  .card h3{ font-size:17px; margin:2px 0 0; }
+  .card p{ font-size:13px; color:var(--ink-70); line-height:1.5; margin:0; }
+  .card .meta{ font-size:11.5px; color:var(--ink-50); font-family:'IBM Plex Mono', monospace; }
+  .card-actions{ display:flex; gap:8px; margin-top:auto; padding-top:8px; }
+  .icon-btn{
+    border:none; background:var(--sand); color:var(--ink-70);
+    width:30px; height:30px; border-radius:9px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .icon-btn:hover{ background:var(--aqua-soft); }
+  .icon-btn.danger:hover{ background:#f7d9d3; color:var(--coral); }
+  .icon-btn svg{ width:14px; height:14px; }
+
+  .list-row{
+    background:#fff; border-radius:14px; padding:16px 18px;
+    box-shadow:var(--shadow); border:1px solid rgba(10,37,48,.05);
+    display:flex; justify-content:space-between; align-items:center; gap:14px;
+    margin-bottom:10px;
+  }
+  .list-row .lr-main{ min-width:0; }
+  .list-row h4{ margin:0 0 3px; font-size:14.5px; font-family:'Fraunces', serif; font-weight:600;}
+  .list-row p{ margin:0; font-size:12.5px; color:var(--ink-70); }
+  .list-row .lr-actions{ display:flex; gap:8px; flex-shrink:0; }
+
+  .empty-state{
+    border:1.5px dashed rgba(10,37,48,.18);
+    border-radius:var(--radius);
+    padding:44px 20px; text-align:center; color:var(--ink-50);
+  }
+  .empty-state h3{ color:var(--ink-70); margin-bottom:6px; font-size:16px; }
+  .empty-state p{ font-size:13px; margin:0 0 16px; }
+
+  /* prayer submit box */
+  .home-panel{
+    background:#fff;
+    border-radius:var(--radius);
+    padding:20px 22px;
+    box-shadow:var(--shadow);
+    margin-bottom:18px;
+  }
+  .home-panel-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .home-panel-head h3{ margin:0; font-size:16px; }
+  .home-panel-head button{
+    border:none;
+    background:none;
+    color:var(--teal);
+    font-size:12px;
+    font-weight:600;
+    font-family:'IBM Plex Mono', monospace;
+    padding:0;
+  }
+  .home-panel-head button:hover{ text-decoration:underline; }
+  .home-panel .list-row{ padding:10px 0; }
+  .home-panel-empty{ font-size:13px; color:var(--ink-50); padding:6px 0; }
+  .home-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-bottom:4px; }
+  .quick-actions{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:18px; }
+  .quick-action{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:6px;
+    padding:16px;
+    border-radius:14px;
+    border:1px solid rgba(10,37,48,.08);
+    background:#fff;
+    box-shadow:var(--shadow);
+    text-align:left;
+    transition:transform .15s ease, border-color .15s ease;
+  }
+  .quick-action:hover{ transform:translateY(-2px); border-color:var(--aqua); }
+  .quick-action .qa-icon{ font-size:20px; }
+  .quick-action .qa-label{ font-size:13px; font-weight:600; font-family:'Fraunces', serif; }
+  .cta-row{ display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+  .cta-card{
+    flex:1;
+    min-width:220px;
+    padding:18px 20px;
+    border-radius:16px;
+    background:linear-gradient(135deg, var(--deep), var(--teal));
+    color:var(--foam);
+  }
+  .cta-card h4{ margin:0 0 4px; font-family:'Fraunces', serif; font-size:15px; }
+  .cta-card p{ margin:0 0 12px; font-size:12.5px; color:var(--aqua-soft); line-height:1.4; }
+  .cta-card button{
+    border:none;
+    background:var(--gold);
+    color:#3a2705;
+    font-weight:700;
+    font-size:12px;
+    padding:8px 14px;
+    border-radius:10px;
+  }
+
+  .compose-box{
+    background:linear-gradient(135deg, var(--deep), var(--teal));
+    border-radius:var(--radius);
+    padding:24px;
+    color:#fff;
+    margin-bottom:24px;
+  }
+  .compose-box .eyebrow{ color:var(--aqua-soft); }
+  .compose-box h3{ margin:4px 0 14px; font-size:19px; }
+  .compose-box textarea, .compose-box input, .compose-box select{
+    width:100%; border-radius:10px; border:1px solid rgba(255,255,255,.2);
+    background:rgba(255,255,255,.08); color:#fff; padding:11px 13px;
+    font-family:inherit; font-size:13.5px; margin-bottom:10px; outline:none;
+  }
+  .compose-box select{ appearance:auto; }
+  .compose-box select option{ color:#0a2530; }
+  .compose-box textarea{ resize:vertical; min-height:70px; }
+  .compose-box input::placeholder, .compose-box textarea::placeholder{ color:rgba(255,255,255,.45); }
+  .compose-submit{
+    padding:10px 18px; border:none; border-radius:10px;
+    background:var(--gold); color:#3a2705; font-weight:700; font-size:13px;
+  }
+  .privacy-toggle{ display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--aqua-soft); margin-bottom:12px; }
+
+  .prayer-row{ border-left:3px solid var(--aqua); }
+  .prayer-row.oracion{ border-left-color:var(--teal); }
+  .prayer-row.answered{ border-left-color:var(--gold); }
+  .pill{
+    font-size:10px; font-family:'IBM Plex Mono', monospace; text-transform:uppercase;
+    padding:3px 8px; border-radius:20px; background:var(--sand); color:var(--ink-70);
+  }
+  .pill.oracion{ background:var(--aqua-soft); color:#0e4a4f; }
+  .pill.answered{ background:var(--gold-soft); color:#7a5410; }
+  .pill.ministerio{ background:#eef1f6; color:var(--ink-70); margin-left:6px; }
+
+  .estado-select{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    padding:6px 8px;
+    border-radius:8px;
+    border:1px solid rgba(10,37,48,.15);
+    background:var(--sand);
+    color:var(--ink-70);
+    outline:none;
+  }
+
+  .mini-switch{ display:inline-flex; align-items:center; gap:7px; font-size:11px; color:var(--ink-70); cursor:pointer; user-select:none; }
+  .mini-switch input{ display:none; }
+  .mini-switch .track{ width:30px; height:16px; border-radius:20px; background:#d8e4e2; position:relative; transition:background .2s; flex-shrink:0; }
+  .mini-switch .track::after{ content:''; position:absolute; top:2px; left:2px; width:12px; height:12px; border-radius:50%; background:#fff; transition:transform .2s; box-shadow:0 1px 2px rgba(0,0,0,.25); }
+  .mini-switch input:checked + .track{ background:var(--teal); }
+  .mini-switch input:checked + .track::after{ transform:translateX(14px); }
+  .card .card-footer{ display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:10px; gap:8px; flex-wrap:wrap; }
+
+  /* modal */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(10,37,48,.5);
+    backdrop-filter:blur(3px);
+    display:flex; align-items:center; justify-content:center;
+    z-index:50; padding:20px;
+  }
+  .modal{
+    background:#fff; border-radius:20px; padding:28px; width:100%; max-width:420px;
+    box-shadow:0 30px 70px rgba(0,0,0,.25);
+    animation:riseIn .35s ease both;
+  }
+  .modal h3{ margin:0 0 18px; font-size:19px; }
+  .modal .field label{ color:var(--ink-50); }
+  .modal .field input, .modal .field textarea, .modal .field select{
+    width:100%; padding:11px 12px; border-radius:10px;
+    border:1px solid rgba(10,37,48,.15); font-family:inherit; font-size:13.5px; outline:none;
+    background:#fff; color:var(--ink);
+  }
+  .modal .field textarea{ min-height:80px; resize:vertical; }
+  .modal .field input:focus, .modal .field textarea:focus, .modal .field select:focus{ border-color:var(--teal); }
+  .modal-actions{ display:flex; gap:10px; margin-top:18px; }
+  .modal-actions button{ flex:1; padding:11px; border-radius:10px; border:none; font-weight:600; font-size:13.5px; }
+  .modal-cancel{ background:var(--sand); color:var(--ink-70); }
+  .modal-save{ background:var(--ink); color:#fff; }
+
+  .toast{
+    position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:#fff; padding:12px 20px; border-radius:12px;
+    font-size:13px; box-shadow:0 12px 30px rgba(0,0,0,.25);
+    opacity:0; transition:opacity .25s, transform .25s; z-index:60; pointer-events:none;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* =====================================================================
+     BREAKPOINTS DE PANTALLA
+     S   (móvil)          : <= 599px
+     M   (tablet)         : 600px – 899px
+     L   (laptop)         : 900px – 1279px   (tamaño por defecto)
+     XL  (desktop)        : 1280px – 1679px
+     XXL (extra larga / ultra-wide) : >= 1680px
+     ===================================================================== */
+
+  /* ---- S + M: el sidebar se convierte en menú hamburguesa ---- */
+  @media (max-width: 899px){
+    .sidebar{ position:fixed; z-index:40; height:100vh; transform:translateX(-100%); transition:transform .25s; }
+    .sidebar.open{ transform:translateX(0); }
+    .main{ padding:22px 18px 60px; max-width:none; }
+    .mobile-menu-btn{ display:flex !important; }
+  }
+
+  /* ---- S: móvil ---- */
+  @media (max-width: 599px){
+    .main{ padding:18px 14px 56px; }
+    .topbar{ margin-bottom:18px; }
+    .topbar h1{ font-size:20px; }
+    .stat-row{ grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:22px; }
+    .stat-card{ padding:14px 16px; }
+    .stat-card .num{ font-size:22px; }
+    .home-grid{ grid-template-columns:1fr; gap:12px; }
+    .panel-grid{ grid-template-columns:1fr; }
+    .quick-actions{ grid-template-columns:repeat(2,1fr); gap:10px; }
+    .celula-grid{ grid-template-columns:1fr; }
+    .login-card{ padding:34px 22px 26px; max-width:100%; }
+  }
+
+  /* ---- M: tablet ---- */
+  @media (min-width: 600px) and (max-width: 899px){
+    .main{ padding:26px 28px 60px; }
+    .stat-row{ grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); }
+    .panel-grid{ grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); }
+    .home-grid{ grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); }
+  }
+
+  /* ---- L: laptop (comportamiento por defecto, sin cambios) ---- */
+
+  /* ---- XL: desktop ---- */
+  @media (min-width: 1280px) and (max-width: 1679px){
+    .main{ max-width:1440px; padding:36px 52px 64px; }
+    .panel-grid{ grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); }
+    .stat-row{ grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); }
+    .home-grid{ grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
+  }
+
+  /* ---- XXL: extra larga / ultra-wide -> ocupa toda la pantalla ---- */
+  @media (min-width: 1680px){
+    .sidebar{ width:268px; padding:30px 22px; }
+    .main{ max-width:none; padding:46px 68px 76px; }
+    .topbar h1{ font-size:30px; }
+    .panel-grid{ grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:20px; }
+    .stat-row{ grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:18px; }
+    .home-grid{ grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:20px; }
+    .quick-actions{ grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); }
+    .celula-grid{ max-width:1200px; }
+  }
+
+  .mobile-menu-btn{
+    display:none; align-items:center; justify-content:center;
+    width:38px;height:38px;border-radius:10px;border:1px solid rgba(10,37,48,.15);
+    background:#fff; margin-right:10px;
+  }
+  .mobile-menu-btn svg{ width:18px; height:18px; }
+
+  /* ---------- icon system (SVG, renders identically on every OS) ---------- */
+  .nav-item svg, .mobile-menu-btn svg{ display:block; }
+  .icon-check svg{ width:14px; height:14px; display:block; }
+
+  /* ---------- spinner ---------- */
+  .spinner{
+    width:16px; height:16px;
+    border:2px solid rgba(255,255,255,.35);
+    border-top-color:#fff;
+    border-radius:50%;
+    display:inline-block;
+    animation:spin .7s linear infinite;
+    vertical-align:middle;
+  }
+  .modal .spinner{ border-color:rgba(10,37,48,.2); border-top-color:var(--ink); }
+  .btn-primary[disabled], .compose-submit[disabled], .add-btn[disabled], .modal-save[disabled]{
+    opacity:.7; cursor:not-allowed;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  /* ---------- section / route transitions ---------- */
+  #content-area.content-fade{ animation:contentFadeIn .32s cubic-bezier(.16,.9,.35,1) both; }
+  @keyframes contentFadeIn{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .topbar{ transition:opacity .2s ease; }
+
+  /* ---------- terms & conditions ---------- */
+  .terms-check-row{
+    display:flex; align-items:flex-start; gap:9px;
+    margin:2px 0 18px;
+  }
+  .terms-check-row input[type="checkbox"]{
+    margin-top:3px; width:16px; height:16px; flex-shrink:0; accent-color:var(--aqua);
+  }
+  .terms-check-row label{
+    font-size:11.5px; line-height:1.5; color:rgba(255,255,255,.6);
+    font-family:'Work Sans', sans-serif; text-transform:none; letter-spacing:normal;
+  }
+  .terms-link{
+    background:none; border:none; padding:0; color:var(--aqua);
+    text-decoration:underline; cursor:pointer; font-size:inherit; font-family:inherit;
+  }
+  .terms-modal{ max-width:480px; max-height:80vh; display:flex; flex-direction:column; }
+  .terms-body{
+    overflow-y:auto; font-size:12.5px; line-height:1.65; color:var(--ink-70);
+    padding-right:4px; margin-bottom:6px;
+  }
+  .terms-body h4{ font-size:13.5px; margin:14px 0 4px; }
+  .terms-body h4:first-child{ margin-top:0; }
+  .terms-body p{ margin:0 0 8px; }
+
+  @media (max-width: 899px){
+    #wave-canvas{ opacity:.55; }
+    .drift{ display:none; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .drift, .login-card, #content-area.content-fade{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN ===================== -->
+<div id="login-screen">
+  <canvas id="wave-canvas"></canvas>
+  <div id="drift-layer"></div>
+
+  <div class="login-card" id="login-card">
+    <div class="brand-mark">
+      <svg viewBox="0 0 56 56" fill="none">
+        <circle cx="28" cy="28" r="27" stroke="rgba(255,255,255,.25)" stroke-width="1"/>
+        <path d="M28 8C28 8 15 24.5 15 34.5C15 42 20.8 48 28 48C35.2 48 41 42 41 34.5C41 24.5 28 8 28 8Z" fill="url(#dropGrad)"/>
+        <defs>
+          <linearGradient id="dropGrad" x1="15" y1="8" x2="41" y2="48" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#5fd3c4"/>
+            <stop offset="1" stop-color="#e8b75d"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <h1>Fuente De Agua Viva</h1>
+    <p class="login-sub">"Ríos de agua viva correrán de su interior." — Juan 7:38</p>
+
+    <div id="login-view">
+      <div class="field">
+        <label>Correo electrónico</label>
+        <input type="email" id="login-email" placeholder="tucorreo@ejemplo.com" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <div class="pass-wrap">
+          <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+          <button type="button" class="pass-toggle" data-target="login-pass" aria-label="Mostrar contraseña"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="login-btn" type="button">Entrar</button>
+      <p class="login-error hidden" id="login-error">Correo o contraseña incorrectos.</p>
+
+      <p class="register-switch">¿Eres miembro de la iglesia y no tienes cuenta? <button type="button" id="show-register-btn">Regístrate aquí</button></p>
+
+      <div class="demo-box">
+        <span class="demo-box-label">Credenciales de prueba · toca para autocompletar</span>
+        <button type="button" class="demo-chip" data-demo="pastor-nancy">
+          <span class="demo-chip-role">Pastora / Admin</span>
+          <span class="demo-chip-mail">nancyalvia@fuenteaguaviva.org</span>
+        </button>
+        <button type="button" class="demo-chip" data-demo="pastor-galo">
+          <span class="demo-chip-role">Pastor / Admin</span>
+          <span class="demo-chip-mail">galoalomoto@fuenteaguaviva.org</span>
+        </button>
+        <button type="button" class="demo-chip" data-demo="lider-nataly">
+          <span class="demo-chip-role">Líder de ministerio</span>
+          <span class="demo-chip-mail">priscilaquintero@fuenteaguaviva.org</span>
+        </button>
+        <button type="button" class="demo-chip" data-demo="miembro">
+          <span class="demo-chip-role">Miembro</span>
+          <span class="demo-chip-mail">carlosbravo@fuenteaguaviva.org</span>
+        </button>
+        <button type="button" class="demo-chip" data-demo="secretaria">
+          <span class="demo-chip-role">Secretaría / Oficina</span>
+          <span class="demo-chip-mail">secretaria@fuenteaguaviva.org</span>
+        </button>
+      </div>
+
+      <p class="login-note">Estas cuentas son de prueba mientras conectamos tu sistema de acceso real.</p>
+      <p class="login-note">Al iniciar sesión aceptas los <button type="button" class="terms-link" id="show-terms-btn-login">términos y condiciones</button> de esta plataforma.</p>
+    </div>
+
+    <div id="register-view" class="hidden">
+      <div class="field">
+        <label>Nombre completo</label>
+        <input type="text" id="reg-nombre" placeholder="Tu nombre completo">
+      </div>
+      <div class="field">
+        <label>Correo electrónico</label>
+        <input type="email" id="reg-correo" placeholder="tucorreo@ejemplo.com" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Ministerio al que perteneces</label>
+        <select id="reg-ministerio">
+          <option value="">General / no aplica</option>
+          <option value="Ministerio de niños">Ministerio de niños</option>
+          <option value="Ministerio de jóvenes">Ministerio de jóvenes</option>
+          <option value="Ministerio adolescentes">Ministerio adolescentes</option>
+          <option value="Ministerio de caballeros">Ministerio de caballeros</option>
+          <option value="Ministerio de damas">Ministerio de damas</option>
+          <option value="Ministerio de alabanza">Ministerio de alabanza</option>
+          <option value="Ministerio de ujieres">Ministerio de ujieres</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Crea una contraseña</label>
+        <div class="pass-wrap">
+          <input type="password" id="reg-pass" placeholder="••••••••" autocomplete="new-password">
+          <button type="button" class="pass-toggle" data-target="reg-pass" aria-label="Mostrar contraseña"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <ul class="pass-requirements" id="reg-pass-reqs">
+          <li data-rule="length"><span class="mark"></span>Mínimo 8 caracteres</li>
+          <li data-rule="upper"><span class="mark"></span>Una letra mayúscula (A-Z)</li>
+          <li data-rule="lower"><span class="mark"></span>Una letra minúscula (a-z)</li>
+          <li data-rule="number"><span class="mark"></span>Un número (0-9)</li>
+          <li data-rule="special"><span class="mark"></span>Un carácter especial (!@#$%&*...)</li>
+        </ul>
+      </div>
+
+      <div class="terms-check-row">
+        <input type="checkbox" id="reg-terms">
+        <label for="reg-terms">He leído y acepto los <button type="button" class="terms-link" id="show-terms-btn">términos y condiciones</button> de uso de esta plataforma.</label>
+      </div>
+
+      <button class="btn-primary" id="register-btn" type="button">Enviar solicitud</button>
+      <p class="login-error hidden" id="register-error">Completa todos los campos con un correo válido.</p>
+      <p class="register-note">Tu solicitud será revisada por un pastor antes de poder iniciar sesión.</p>
+
+      <p class="register-switch"><button type="button" id="show-login-btn">← Ya tengo cuenta, iniciar sesión</button></p>
+    </div>
+
+  </div>
+
+  <div class="verse">Fuente De Agua Viva · Comunidad de fe</div>
+</div>
+
+<!-- ===================== APP SHELL ===================== -->
+<div id="app-shell" class="hidden">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <svg viewBox="0 0 56 56" fill="none">
+        <path d="M28 8C28 8 15 24.5 15 34.5C15 42 20.8 48 28 48C35.2 48 41 42 41 34.5C41 24.5 28 8 28 8Z" fill="url(#dropGrad2)"/>
+        <defs><linearGradient id="dropGrad2" x1="15" y1="8" x2="41" y2="48" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#5fd3c4"/><stop offset="1" stop-color="#e8b75d"/>
+        </linearGradient></defs>
+      </svg>
+      <span>Fuente De<br>Agua Viva</span>
+    </div>
+
+    <div class="nav-group">
+      <button class="nav-item" data-section="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg> <span>Inicio</span></button>
+    </div>
+
+    <div class="nav-group" id="content-nav-group">
+      <div class="nav-label">Vida de iglesia</div>
+      <button class="nav-item" data-section="anuncios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a5 5 0 0 0-5 5v3.2c0 .95-.36 1.86-1.02 2.55l-1.3 1.35A1 1 0 0 0 5.4 17h13.2a1 1 0 0 0 .72-1.7l-1.3-1.35A3.6 3.6 0 0 1 17 11.2V8a5 5 0 0 0-5-5z"/><path d="M9.5 20a2.5 2.5 0 0 0 5 0"/></svg> <span>Anuncios</span></button>
+      <button class="nav-item" data-section="eventos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="2"/><line x1="3.5" y1="10" x2="20.5" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg> <span>Eventos</span></button>
+      <button class="nav-item" data-section="ministerios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="1.4"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.4"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.4"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.4"/></svg> <span>Ministerios</span></button>
+      <button class="nav-item" data-section="sermones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg> <span>Sermones</span></button>
+    </div>
+
+    <div class="nav-group hidden" id="oficina-nav-group">
+      <div class="nav-label">Oficina pastoral</div>
+      <button class="nav-item" id="oficina-nav-item" data-section="oficina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg> <span>Oficina pastoral</span></button>
+    </div>
+
+    <div class="nav-group" id="comunidad-nav-group">
+      <div class="nav-label">Comunidad</div>
+      <button class="nav-item" data-section="peticiones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.4s-7.2-4.35-9.4-8.55C1.3 8.8 2.9 5.3 6.3 4.85c2-.27 3.9.85 5.7 3.05 1.8-2.2 3.7-3.32 5.7-3.05 3.4.45 5 3.95 3.7 6.9C19.2 16.05 12 20.4 12 20.4z"/></svg> <span>Peticiones de oración</span></button>
+      <button class="nav-item" data-section="testimonios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4v-4H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg> <span>Testimonios</span></button>
+    </div>
+
+    <div class="nav-group" id="admin-nav-group">
+      <div class="nav-label">Administración</div>
+      <button class="nav-item" data-section="miembros"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.3" cy="8.2" r="3.2"/><path d="M2.6 20c0-3.3 2.5-6 5.7-6s5.7 2.7 5.7 6"/><circle cx="17" cy="9" r="2.5"/><path d="M14.6 14.3c2.8.5 5.4 2.7 5.4 5.7"/></svg> <span>Miembros</span> <span id="miembros-badge" class="nav-badge hidden">0</span></button>
+    </div>
+
+    <div class="nav-group hidden" id="profile-nav-group">
+      <div class="nav-label">Mi cuenta</div>
+      <button class="nav-item" data-section="perfil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg> <span>Mi perfil</span></button>
+    </div>
+
+    <div class="sb-footer">
+      <div class="user-chip">
+        <div class="avatar" id="avatar-initials">M</div>
+        <div>
+          <div class="u-name" id="user-name-display">Miembro</div>
+          <div class="u-role" id="user-role-display">Miembro de la iglesia</div>
+        </div>
+      </div>
+      <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div style="display:flex; align-items:center;">
+        <button class="mobile-menu-btn" id="mobile-menu-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
+        <div>
+          <span class="eyebrow" id="section-eyebrow">Fuente De Agua Viva</span>
+          <h1 id="section-title">Inicio</h1>
+        </div>
+      </div>
+      <button class="add-btn hidden" id="add-btn">+ <span id="add-btn-label">Agregar</span></button>
+    </div>
+
+    <div id="content-area"></div>
+  </main>
+</div>
+
+<div class="modal-overlay hidden" id="modal-overlay">
+  <div class="modal">
+    <h3 id="modal-title">Nuevo elemento</h3>
+    <div id="modal-fields"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" id="modal-cancel">Cancelar</button>
+      <button class="modal-save" id="modal-save">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="terms-overlay">
+  <div class="modal terms-modal">
+    <h3>Términos y condiciones</h3>
+    <div class="terms-body">
+      <h4>1. Uso de la plataforma</h4>
+      <p>Este panel es de uso exclusivo para miembros, líderes y personal administrativo de Fuente De Agua Viva. Al registrarte, confirmas que perteneces a la congregación o que estás autorizado por un pastor para acceder.</p>
+      <h4>2. Aprobación de cuentas</h4>
+      <p>Toda solicitud de registro queda pendiente hasta que un pastor la revise y apruebe. La iglesia puede rechazar una solicitud sin necesidad de justificarlo.</p>
+      <h4>3. Datos personales</h4>
+      <p>La información que compartas (nombre, correo, ministerio, peticiones de oración, testimonios) se usa únicamente para la vida y el seguimiento pastoral de la congregación, y no se comparte con terceros ajenos a la iglesia.</p>
+      <h4>4. Buen uso de la comunidad</h4>
+      <p>Se espera que el contenido publicado en anuncios, testimonios y peticiones sea respetuoso y coherente con los valores de la congregación. La administración puede editar o remover contenido inapropiado.</p>
+      <h4>5. Contraseña</h4>
+      <p>Eres responsable de mantener tu contraseña en privado. Si sospechas que alguien más accedió a tu cuenta, avisa a la oficina pastoral lo antes posible.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-save" id="terms-close" style="flex:1;">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ===================== ICON SYSTEM (inline SVG, same on every OS/browser) ===================== */
+  const ICON_EYE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const ICON_EYE_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="3" x2="21" y2="21"/></svg>';
+  const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6"/></svg>';
+
+  /* ===================== SALUDO SEGÚN GÉNERO DEL NOMBRE ===================== */
+  const FEMALE_NAME_EXCEPTIONS = new Set(['carmen','michelle','nancy','jenny','ruth','esther','ester','isabel','raquel','mercedes','soledad','rosario','guadalupe','elizabeth','judith','miriam','jazmin','evelyn','katherine','jennifer','marilyn','kimberly','ingrid','gladys','mayra','belen','lourdes','noemi','abigail','dulce','yamile','maite']);
+  const MALE_NAME_EXCEPTIONS = new Set(['joshua','noe','isaia']);
+  function inferGenderFromName(rawName){
+    const name = (rawName||'').trim();
+    const prefixMatch = name.match(/^(hna\.?|hno\.?)\s+/i);
+    if(prefixMatch) return /^hna/i.test(prefixMatch[1]) ? 'f' : 'm';
+    const firstWord = name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().split(/\s+/)[0].replace(/[^a-z]/g,'');
+    if(!firstWord) return 'f';
+    if(FEMALE_NAME_EXCEPTIONS.has(firstWord)) return 'f';
+    if(MALE_NAME_EXCEPTIONS.has(firstWord)) return 'm';
+    return firstWord.endsWith('a') ? 'f' : 'm';
+  }
+  function welcomeGreeting(rawName){
+    const name = (rawName||'').trim();
+    const cleanName = name.replace(/^(hna\.?|hno\.?)\s+/i,'').trim();
+    const isFemale = inferGenderFromName(name) === 'f';
+    const prefix = isFemale ? 'Hna.' : 'Hno.';
+    const saludo = isFemale ? 'Bienvenida' : 'Bienvenido';
+    return `${saludo}, ${prefix} ${cleanName}`;
+  }
+
+  /* ===================== REGLAS DE CONTRASEÑA SEGURA ===================== */
+  const PASSWORD_RULES = [
+    { key:'length',  label:'Mínimo 8 caracteres',              test:p => p.length >= 8 },
+    { key:'upper',   label:'Una letra mayúscula (A-Z)',        test:p => /[A-ZÁÉÍÓÚÑ]/.test(p) },
+    { key:'lower',   label:'Una letra minúscula (a-z)',        test:p => /[a-záéíóúñ]/.test(p) },
+    { key:'number',  label:'Un número (0-9)',                  test:p => /[0-9]/.test(p) },
+    { key:'special', label:'Un carácter especial (!@#$%&*...)', test:p => /[^A-Za-z0-9]/.test(p) }
+  ];
+  function passwordRuleResults(pass){
+    return PASSWORD_RULES.map(r => ({ key:r.key, label:r.label, ok: r.test(pass||'') }));
+  }
+  function passwordIsValid(pass){
+    return passwordRuleResults(pass).every(r => r.ok);
+  }
+  function passwordRequirementsHtml(listId){
+    return `<ul class="pass-requirements" id="${listId}">` +
+      PASSWORD_RULES.map(r => `<li data-rule="${r.key}"><span class="mark">${ICON_CHECK}</span>${r.label}</li>`).join('') +
+      `</ul>`;
+  }
+  function bindPasswordChecklist(inputId, listId){
+    const input = document.getElementById(inputId);
+    const list = document.getElementById(listId);
+    if(!input || !list) return;
+    const update = ()=>{
+      const results = passwordRuleResults(input.value);
+      results.forEach(r=>{
+        const li = list.querySelector(`[data-rule="${r.key}"]`);
+        if(!li) return;
+        li.classList.toggle('met', r.ok);
+        const mark = li.querySelector('.mark');
+        if(mark) mark.innerHTML = r.ok ? ICON_CHECK : '';
+      });
+    };
+    input.addEventListener('input', update);
+    update();
+  }
+
+  /* ===================== LOGIN ANIMATION (waves + drops) ===================== */
+  const canvas = document.getElementById('wave-canvas');
+  const ctx = canvas.getContext('2d');
+  const isMobileViewport = ()=> window.innerWidth <= 899;
+  const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  const waveLayers = [
+    { amp:26, len:0.010, speed:0.014, yRatio:0.72, color:'rgba(19,107,115,0.55)' },
+    { amp:34, len:0.007, speed:0.010, yRatio:0.80, color:'rgba(14,60,71,0.75)' },
+    { amp:20, len:0.013, speed:0.020, yRatio:0.90, color:'rgba(7,24,32,0.95)' }
+  ];
+  let t = 0;
+  function drawWaves(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // on phones, draw fewer points per wave — same look, much less CPU/battery use
+    const step = isMobileViewport() ? 16 : 8;
+    waveLayers.forEach(layer=>{
+      ctx.beginPath();
+      const baseY = canvas.height*layer.yRatio;
+      ctx.moveTo(0, baseY);
+      for(let x=0;x<=canvas.width;x+=step){
+        const y = baseY + Math.sin(x*layer.len + t*layer.speed)*layer.amp;
+        ctx.lineTo(x,y);
+      }
+      ctx.lineTo(canvas.width, canvas.height);
+      ctx.lineTo(0, canvas.height);
+      ctx.closePath();
+      ctx.fillStyle = layer.color;
+      ctx.fill();
+    });
+    t++;
+  }
+
+  // the loop only runs while the login screen is visible and the tab is active/foreground,
+  // and it's skipped entirely for users who asked their OS to reduce motion
+  let waveRAF = null;
+  let waveRunning = false;
+  function waveLoop(){
+    if(!waveRunning) return;
+    drawWaves();
+    waveRAF = requestAnimationFrame(waveLoop);
+  }
+  function startWaves(){
+    if(waveRunning || reducedMotion) { drawWaves(); return; }
+    waveRunning = true;
+    waveLoop();
+  }
+  function stopWaves(){
+    waveRunning = false;
+    if(waveRAF) cancelAnimationFrame(waveRAF);
+  }
+  startWaves();
+  document.addEventListener('visibilitychange', ()=>{
+    const loginVisible = !document.getElementById('login-screen').classList.contains('hidden');
+    if(document.hidden || !loginVisible) stopWaves();
+    else startWaves();
+  });
+
+  // ambient rising droplets — skipped on phones and for reduced-motion users (CSS also hides them under 860px)
+  const driftLayer = document.getElementById('drift-layer');
+  driftLayer.style.position='absolute'; driftLayer.style.inset='0'; driftLayer.style.zIndex='1';
+  if(!isMobileViewport() && !reducedMotion){
+    for(let i=0;i<16;i++){
+      const d = document.createElement('div');
+      d.className='drift';
+      const size = 4 + Math.random()*10;
+      d.style.width = size+'px';
+      d.style.height = size+'px';
+      d.style.left = Math.random()*100+'%';
+      d.style.bottom = '-40px';
+      d.style.setProperty('--dx', (Math.random()*60-30)+'px');
+      d.style.animationDuration = (7+Math.random()*8)+'s';
+      d.style.animationDelay = (Math.random()*8)+'s';
+      driftLayer.appendChild(d);
+    }
+  }
+
+  // ripple on click (signature interaction, reused across app)
+  function attachRipple(el){
+    el.style.position = el.style.position || 'relative';
+    el.style.overflow = 'hidden';
+    el.addEventListener('click', function(e){
+      const rect = el.getBoundingClientRect();
+      const span = document.createElement('span');
+      const size = Math.max(rect.width, rect.height);
+      span.className='ripple-span';
+      span.style.width = span.style.height = size+'px';
+      span.style.left = (e.clientX - rect.left - size/2)+'px';
+      span.style.top = (e.clientY - rect.top - size/2)+'px';
+      el.appendChild(span);
+      setTimeout(()=>span.remove(), 650);
+    });
+  }
+  document.querySelectorAll('.btn-primary, .add-btn, .compose-submit, .role-toggle button').forEach(attachRipple);
+
+  /* ===================== APP STATE (en memoria, sin backend aún) ===================== */
+  let selectedRole = 'miembro';
+  let currentUser = { name:'', role:'miembro', memberId:null, email:'' };
+  let uid = 1000;
+  const nextId = ()=> uid++;
+
+  const state = {
+    section: 'inicio',
+    memberFilter: 'todos',
+    data: {
+      anuncios: [
+        { id:nextId(), titulo:'Campaña de recolección de alimentos', fecha:'20 sep 2026', texto:'Estamos recolectando alimentos no perecibles para apoyar a familias de la congregación. Puedes dejar tu donativo en la oficina pastoral hasta el 30 de septiembre.', autor:'Pst. Nancy Alvia', autorMinisterio:'' },
+        { id:nextId(), titulo:'Cambio de horario del culto de oración', fecha:'18 sep 2026', texto:'A partir de esta semana, el culto de oración de los miércoles iniciará a las 7:00 pm en lugar de las 6:30 pm.', autor:'Pst. Galo Alomoto', autorMinisterio:'' },
+        { id:nextId(), titulo:'Inscripciones abiertas para bautismo', fecha:'15 sep 2026', texto:'Si deseas bautizarte, inscríbete con la Hna. Rebeca Zambrano en la oficina. La clase preparatoria inicia el próximo sábado.', autor:'Hna. Rebeca Zambrano', autorMinisterio:'' },
+        { id:nextId(), titulo:'Jornada de limpieza del templo', fecha:'12 sep 2026', texto:'Este sábado a las 9:00 am necesitamos manos voluntarias para una jornada de limpieza y mantenimiento del templo. ¡Todos son bienvenidos!', autor:'Hno. Marco Zambrano', autorMinisterio:'Ministerio de ujieres' },
+        { id:nextId(), titulo:'Nuevo horario de atención pastoral', fecha:'8 sep 2026', texto:'La oficina pastoral ahora atiende de martes a viernes de 9:00 am a 1:00 pm para consejería y trámites.', autor:'Pst. Nancy Alvia', autorMinisterio:'' }
+      ],
+      eventos: [
+        { id:nextId(), titulo:'Retiro de matrimonios', fecha:'10 oct 2026 · 8:00 am', lugar:'Hostería Rancho Alegre', autor:'Pst. Galo Alomoto', autorMinisterio:'' },
+        { id:nextId(), titulo:'Vigilia de jóvenes', fecha:'3 oct 2026 · 9:00 pm', lugar:'Templo principal', autor:'Hna. Jenny De La Rosa', autorMinisterio:'Ministerio de jóvenes' },
+        { id:nextId(), titulo:'Congreso de damas "Mujer Conforme al Corazón de Dios"', fecha:'26 sep 2026 · 3:00 pm', lugar:'Salón de eventos Fuente de Agua Viva', autor:'Hna. Diana Gonzáles', autorMinisterio:'Ministerio de damas' },
+        { id:nextId(), titulo:'Bautismo en aguas', fecha:'27 sep 2026 · 10:00 am', lugar:'Río Las Delicias', autor:'Pst. Nancy Alvia', autorMinisterio:'' },
+        { id:nextId(), titulo:'Día del niño en la iglesia', fecha:'4 oct 2026 · 4:00 pm', lugar:'Patio central del templo', autor:'Hno. Samuel Del Pezo', autorMinisterio:'Ministerio de niños' }
+      ],
+      ministerios: [
+        { id:nextId(), nombre:'Ministerio De Niños', lider:'Lidera: Hno. Samuel Del Pezo', descripcion:'Cuida y enseña la Palabra de Dios a los niños de la congregación durante los cultos y actividades especiales.' },
+        { id:nextId(), nombre:'Ministerio De Adolescentes', lider:'Lidera: Hno. Alexander Valencia', descripcion:'Discipulado y actividades para los adolescentes, ayudándolos a crecer en su fe en esta etapa de la vida.' },
+        { id:nextId(), nombre:'Ministerio De Jóvenes', lider:'Lidera: Hna. Jenny De La Rosa', descripcion:'Discipulado, comunión y actividades para los jóvenes de la iglesia.' },
+        { id:nextId(), nombre:'Ministerio De Caballeros', lider:'Lidera: Hno. Gabriel Lainez', descripcion:'Comunión, estudio bíblico y actividades enfocadas en el crecimiento espiritual de los hombres de la congregación.' },
+        { id:nextId(), nombre:'Ministerio De Damas', lider:'Lidera: Hna. Diana Gonzáles', descripcion:'Comunión, estudio bíblico y actividades enfocadas en el crecimiento espiritual de las mujeres de la congregación.' },
+        { id:nextId(), nombre:'Ministerio De Ujieres', lider:'Lidera: Hno. Marco Zambrano', descripcion:'Recibe y ubica a la congregación, y cuida el orden y la reverencia durante los cultos y actividades.' },
+        { id:nextId(), nombre:'Ministerio de Consolidadores', lider:'Lidera: Hna. Carmen Loor', descripcion:'Da seguimiento a los nuevos convertidos y visitantes para ayudarlos a integrarse y crecer en la fe.' },
+        { id:nextId(), nombre:'Ministerio de Alabanza', lider:'Lidera: Hna. Paola Andrade', descripcion:'Equipo de música y adoración que dirige la alabanza congregacional en los cultos y eventos especiales.' },
+        { id:nextId(), nombre:'Ministerio De Danza', lider:'Lidera: Hna. Michelle Sánchez', descripcion:'Expresa la adoración a Dios a través de coreografías y danza en los cultos y actividades especiales.' },
+        { id:nextId(), nombre:'Ministerio De Dramas', lider:'Lidera: Hno. Ricardo Franco', descripcion:'Presenta dramatizaciones con mensajes bíblicos para la enseñanza y el evangelismo.' },
+        { id:nextId(), nombre:'Ministerio De Intercesores', lider:'Lidera: Hna. Verónica Chávez', descripcion:'Se dedica a la oración intercesora por la congregación, los líderes y las peticiones de la iglesia.' },
+        { id:nextId(), nombre:'Ministerio De Servicio', lider:'Lidera: Hna. Sofía Cárdenas', descripcion:'Se encarga de la preparación y el servicio de las comidas al finalizar los cultos y en las actividades y eventos especiales de la iglesia.' }
+      ],
+      oficina: [],
+      actas: [
+        { id:nextId(), titulo:'Reunión de liderazgo - septiembre', fecha:'2 sep 2026', asistentes:'Pst. Nancy, Pst. Galo, líderes de ministerio', decision:'Se acordó iniciar la campaña de recolección de alimentos y reforzar la asistencia a las células de discipulado.', responsable:'Pst. Nancy Alvia', autor:'Pst. Nancy Alvia' },
+        { id:nextId(), titulo:'Reunión de planificación del retiro de matrimonios', fecha:'26 ago 2026', asistentes:'Pst. Galo, Hno. Gabriel Lainez, Hna. Diana Gonzáles', decision:'Se definió la fecha, el lugar y el presupuesto del retiro de matrimonios de octubre.', responsable:'Hno. Gabriel Lainez', autor:'Pst. Galo Alomoto' },
+        { id:nextId(), titulo:'Reunión de evaluación de células', fecha:'19 ago 2026', asistentes:'Pst. Nancy, líderes de célula', decision:'Se revisó el crecimiento de las células evangelísticas y se asignaron nuevos anfitriones.', responsable:'Hna. Rebeca Zambrano', autor:'Pst. Nancy Alvia' },
+        { id:nextId(), titulo:'Reunión de coordinación del congreso de damas', fecha:'12 ago 2026', asistentes:'Pst. Nancy, Hna. Diana Gonzáles, equipo de damas', decision:'Se aprobó el presupuesto y la logística del congreso "Mujer Conforme al Corazón de Dios".', responsable:'Hna. Diana Gonzáles', autor:'Hna. Diana Gonzáles' },
+        { id:nextId(), titulo:'Reunión general de liderazgo - agosto', fecha:'5 ago 2026', asistentes:'Pst. Nancy, Pst. Galo, todos los líderes de ministerio', decision:'Se estableció el calendario de eventos del último trimestre del año y se revisaron los informes de cada ministerio.', responsable:'Pst. Galo Alomoto', autor:'Pst. Nancy Alvia' }
+      ],
+      registroEclesiastico: [
+        { id:nextId(), tipo:'Bautismo', persona:'Mauricio Cruz Parra', fecha:'27 ago 2026', oficiante:'Pst. Nancy Alvia', observaciones:'Bautizado en el río Las Delicias junto a otros 6 candidatos.', autor:'Pst. Nancy Alvia' },
+        { id:nextId(), tipo:'Membresía nueva', persona:'Camila Reyes', fecha:'20 ago 2026', oficiante:'Pst. Galo Alomoto', observaciones:'Completó la clase de nuevos miembros y firmó el pacto de membresía.', autor:'Pst. Galo Alomoto' },
+        { id:nextId(), tipo:'Matrimonio', persona:'Jonathan Pico y Estefanía Rugel', fecha:'15 ago 2026', oficiante:'Pst. Nancy Alvia', observaciones:'Ceremonia realizada en el templo principal con la presencia de ambas familias.', autor:'Pst. Nancy Alvia' },
+        { id:nextId(), tipo:'Dedicación de niños', persona:'Isaac Bravo Cedeño', fecha:'9 ago 2026', oficiante:'Pst. Galo Alomoto', observaciones:'Dedicación realizada durante el culto dominical junto a sus padres, Carlos Bravo y Fernanda Cedeño.', autor:'Pst. Galo Alomoto' },
+        { id:nextId(), tipo:'Transferencia de membresía', persona:'Verónica Chávez', fecha:'2 ago 2026', oficiante:'Hna. Rebeca Zambrano', observaciones:'Transferencia recibida desde la Iglesia Camino de Santidad, con carta de recomendación.', autor:'Hna. Rebeca Zambrano' }
+      ],
+      seguimientoLideres: [
+        { id:nextId(), lider:'Hna. Diana Gonzáles', fecha:'10 sep 2026', tema:'Crecimiento del ministerio de damas', notas:'El ministerio de damas está creciendo bien; se acordó apoyar con más material para los estudios bíblicos semanales.', proxima:'10 oct 2026', autor:'Pst. Nancy Alvia' },
+        { id:nextId(), lider:'Hno. Gabriel Lainez', fecha:'8 sep 2026', tema:'Asistencia de la célula evangelística', notas:'Se revisó el avance de los nuevos contactos de la célula; necesita apoyo para el seguimiento de visitantes.', proxima:'6 oct 2026', autor:'Pst. Galo Alomoto' },
+        { id:nextId(), lider:'Priscila Quintero', fecha:'3 sep 2026', tema:'Discipulado de jóvenes', notas:'Buen avance en el proceso de discipulado; se sugirió incorporar un nuevo módulo de liderazgo.', proxima:'1 oct 2026', autor:'Pst. Nancy Alvia' },
+        { id:nextId(), lider:'Hna. Diana Gonzáles', fecha:'27 ago 2026', tema:'Preparación del congreso de damas', notas:'Se coordinaron los últimos detalles de logística y publicidad para el congreso de septiembre.', proxima:'24 sep 2026', autor:'Hna. Rebeca Zambrano' },
+        { id:nextId(), lider:'Hno. Gabriel Lainez', fecha:'20 ago 2026', tema:'Vida devocional del ministerio de caballeros', notas:'Se animó a fortalecer los tiempos de oración grupal antes de cada reunión de caballeros.', proxima:'18 sep 2026', autor:'Pst. Galo Alomoto' }
+      ],
+      gastos: [
+        { id:nextId(), tipo:'Gasto', monto:85.50, descripcion:'Pago de planilla de luz y agua del templo', ministerio:'', fecha:'2026-09-05', devuelto:false, registradoPor:'Hna. Rebeca Zambrano' },
+        { id:nextId(), tipo:'Compra', monto:150, descripcion:'Compra de sillas plásticas para el salón de eventos', ministerio:'', fecha:'2026-08-28', devuelto:false, registradoPor:'Hna. Rebeca Zambrano' },
+        { id:nextId(), tipo:'Préstamo a ministerio', monto:100, descripcion:'Préstamo para materiales del congreso de damas', ministerio:'Ministerio De Damas', fecha:'2026-08-20', devuelto:false, registradoPor:'Pst. Nancy Alvia' },
+        { id:nextId(), tipo:'Gasto', monto:45, descripcion:'Compra de refrigerios para la vigilia de jóvenes', ministerio:'', fecha:'2026-08-15', devuelto:true, registradoPor:'Hna. Jenny De La Rosa' },
+        { id:nextId(), tipo:'Compra', monto:60, descripcion:'Material didáctico para el ministerio de niños', ministerio:'', fecha:'2026-08-10', devuelto:false, registradoPor:'Hno. Samuel Del Pezo' }
+      ],
+      consejeria: [
+        { id:nextId(), titulo:'Acompañamiento familiar', texto:'Seguimiento a una familia que atraviesa un momento difícil; se coordinó visita pastoral.', fecha:'5 ago 2026', autor:'Pst. Nancy Alvia' },
+        { id:nextId(), titulo:'Consejería prematrimonial', texto:'Sesión de consejería prematrimonial para una pareja próxima a casarse; se programaron 3 sesiones adicionales.', fecha:'12 ago 2026', autor:'Pst. Galo Alomoto' },
+        { id:nextId(), titulo:'Acompañamiento en duelo', texto:'Apoyo pastoral a un miembro de la congregación tras la pérdida de un familiar cercano.', fecha:'20 ago 2026', autor:'Pst. Nancy Alvia' },
+        { id:nextId(), titulo:'Consejería matrimonial', texto:'Sesión de consejería para un matrimonio con dificultades de comunicación; se recomendó seguimiento quincenal.', fecha:'28 ago 2026', autor:'Pst. Galo Alomoto' },
+        { id:nextId(), titulo:'Orientación espiritual a nuevo convertido', texto:'Acompañamiento a un nuevo convertido para afirmar su decisión de fe y resolver dudas doctrinales.', fecha:'3 sep 2026', autor:'Pst. Nancy Alvia' }
+      ],
+      diezmos: [
+        { id:nextId(), monto:120, categoria:'Diezmo', ministerio:'', donante:'Hna. Fernanda Ibeth Cedeño Ruiz', fecha:'2026-08-09', registradoPor:'' },
+        { id:nextId(), monto:35, categoria:'Ofrenda general', ministerio:'', donante:'Ofrenda general de la congregación', fecha:'2026-08-09', registradoPor:'' },
+        { id:nextId(), monto:60, categoria:'Ofrenda misionera', ministerio:'Ministerio de jóvenes', donante:'Ofrenda misionera', fecha:'2026-08-02', registradoPor:'' },
+        { id:nextId(), monto:80, categoria:'Diezmo', ministerio:'', donante:'Hno. Carlos Andrés Bravo Solís', fecha:'2026-09-06', registradoPor:'Hna. Rebeca Zambrano' },
+        { id:nextId(), monto:45, categoria:'Ofrenda general', ministerio:'', donante:'Ofrenda general de la congregación', fecha:'2026-09-13', registradoPor:'Hna. Rebeca Zambrano' }
+      ],
+      sermones: [
+        { id:nextId(), titulo:'Firmes en la fe', predicador:'Pst. Nancy Alvia', fecha:'14 sep 2026', notas:'Reflexión sobre cómo mantenerse firmes en tiempos de adversidad, basado en Efesios 6:10-18.', autor:'Pst. Nancy Alvia', autorMinisterio:'' },
+        { id:nextId(), titulo:'El poder de la oración', predicador:'Pst. Galo Alomoto', fecha:'7 sep 2026', notas:'Mensaje sobre la importancia de la vida de oración personal y congregacional, basado en Santiago 5:16.', autor:'Pst. Galo Alomoto', autorMinisterio:'' },
+        { id:nextId(), titulo:'Restauración y propósito', predicador:'Pst. Nancy Alvia', fecha:'31 ago 2026', notas:'Enseñanza sobre cómo Dios restaura lo que el enemigo ha destruido, basada en Joel 2:25.', autor:'Pst. Nancy Alvia', autorMinisterio:'' },
+        { id:nextId(), titulo:'Familias conforme al diseño de Dios', predicador:'Pst. Galo Alomoto', fecha:'24 ago 2026', notas:'Mensaje especial para el mes de la familia, con énfasis en el rol de cada miembro del hogar.', autor:'Pst. Galo Alomoto', autorMinisterio:'' },
+        { id:nextId(), titulo:'Vive por fe, no por vista', predicador:'Pst. Nancy Alvia', fecha:'17 ago 2026', notas:'Estudio sobre 2 Corintios 5:7 y cómo caminar en fe en medio de la incertidumbre.', autor:'Pst. Nancy Alvia', autorMinisterio:'' }
+      ],
+      peticiones: [
+        { id:nextId(), nombre:'Hna. Fernanda Ibeth Cedeño Ruiz', autorMinisterio:'Ministerio de damas', texto:'Pido oración por la salud de mi mamá, está pasando por un proceso médico delicado.', dirigidoA:'pastor', ministerio:'', fecha:'20 sep 2026', estado:'oracion' },
+        { id:nextId(), nombre:'Hno. Carlos Andrés Bravo Solís', autorMinisterio:'Ministerio de caballeros', texto:'Oren por provisión económica, estoy buscando un nuevo empleo.', dirigidoA:'pastor', ministerio:'', fecha:'18 sep 2026', estado:'aceptada' },
+        { id:nextId(), nombre:'Camila Reyes', autorMinisterio:'', texto:'Pido oración por sabiduría para tomar una decisión importante en mis estudios.', dirigidoA:'lider', ministerio:'Ministerio de jóvenes', fecha:'15 sep 2026', estado:'enviada' },
+        { id:nextId(), nombre:'Mauricio Cruz Parra', autorMinisterio:'', texto:'Estoy agradecido por mi nueva vida en Cristo, pido oración para mantenerme firme y crecer en la fe.', dirigidoA:'lider', ministerio:'Ministerio de caballeros', fecha:'12 sep 2026', estado:'oracion' },
+        { id:nextId(), nombre:'Jonathan Pico', autorMinisterio:'', texto:'Pido oración por mi matrimonio, que Dios nos guíe en esta nueva etapa juntos.', dirigidoA:'pastor', ministerio:'', fecha:'8 sep 2026', estado:'aceptada' }
+      ],
+      testimonios: [
+        { id:nextId(), nombre:'Camila Reyes', rol:'', ministerio:'Ministerio de jóvenes', texto:'Dios transformó mi vida en pocos meses; encontré propósito y una familia en esta iglesia.', fecha:'19 sep 2026' },
+        { id:nextId(), nombre:'Hno. Carlos Andrés Bravo Solís', rol:'Miembro', ministerio:'Ministerio de caballeros', texto:'Después de meses buscando empleo, Dios abrió una puerta justo cuando ya casi perdía la esperanza.', fecha:'14 sep 2026' },
+        { id:nextId(), nombre:'Mauricio Cruz Parra', rol:'', ministerio:'Ministerio de caballeros', texto:'Llegué a la iglesia invitado por un compañero de trabajo y hoy puedo decir que Dios cambió por completo mi manera de vivir.', fecha:'9 sep 2026' },
+        { id:nextId(), nombre:'Hna. Fernanda Ibeth Cedeño Ruiz', rol:'Miembro', ministerio:'Ministerio de damas', texto:'Dios sanó a mi mamá y hoy testifico de su fidelidad ante toda la congregación.', fecha:'5 sep 2026' },
+        { id:nextId(), nombre:'Jonathan Pico', rol:'', ministerio:'', texto:'El proceso de discipulado me ayudó a entender mi identidad en Cristo y hoy sirvo con alegría en la iglesia.', fecha:'1 sep 2026' }
+      ],
+      miembros: [
+        { id:nextId(), nombre:'Hna. Diana Gonzáles', rol:'Líder / Damas', ministerio:'Ministerio de damas', contacto:'0991234504', correo:'dianagonzales@fuenteaguaviva.org', password:'Diana2026',
+          celulaEvangelistica:[],
+          celulaDiscipulado:[
+            { id:nextId(), nombre:'Fernanda Cedeño', observaciones:'Ya completó la academia de líderes, próxima a servir en el ministerio.' },
+            { id:nextId(), nombre:'Carmen Loor', observaciones:'Avanzando en el módulo de vida devocional, muy comprometida con el proceso.' },
+            { id:nextId(), nombre:'Sofía Cárdenas', observaciones:'Terminó el módulo de identidad en Cristo, próxima a iniciar el de liderazgo de servicio.' },
+            { id:nextId(), nombre:'Paola Andrade', observaciones:'Lleva 4 semanas en el discipulado, muestra buen crecimiento espiritual.' },
+            { id:nextId(), nombre:'Michelle Sánchez', observaciones:'Recién inició el proceso; se le está dando seguimiento cercano.' }
+          ]
+        },
+        { id:nextId(), nombre:'Hno. Gabriel Lainez', rol:'Líder / Caballeros', ministerio:'Ministerio de caballeros', contacto:'0991234503', correo:'gabriellainez@fuenteaguaviva.org', password:'Gabriel2026',
+          celulaEvangelistica:[
+            { id:nextId(), nombre:'Mauricio Cruz Parra', telefono:'0991234599', fecha:'6 ago 2026', observaciones:'Nuevo en la congregación, llegó invitado por un compañero de trabajo.' },
+            { id:nextId(), nombre:'Andrés Pincay', telefono:'0991234588', fecha:'13 ago 2026', observaciones:'Visitó por primera vez invitado por un vecino, mostró mucho interés.' },
+            { id:nextId(), nombre:'Ricardo Franco Jr.', telefono:'0991234577', fecha:'20 ago 2026', observaciones:'Hijo de un miembro de la congregación, está siendo consolidado.' },
+            { id:nextId(), nombre:'Édison Macías', telefono:'0991234566', fecha:'27 ago 2026', observaciones:'Llegó a través de la jornada de evangelismo del ministerio de caballeros.' },
+            { id:nextId(), nombre:'Luis Chévez', telefono:'0991234555', fecha:'3 sep 2026', observaciones:'Contacto de la célula evangelística, en proceso de consolidación.' }
+          ],
+          celulaDiscipulado:[]
+        },
+        { id:nextId(), nombre:'Hna. Fernanda Ibeth Cedeño Ruiz', rol:'Miembro', ministerio:'Ministerio de damas', contacto:'0991234502', correo:'fernandacedeno@fuenteaguaviva.org', password:'Fernanda2026' },
+        { id:nextId(), nombre:'Hno. Carlos Andrés Bravo Solís', rol:'Miembro', ministerio:'Ministerio de caballeros', contacto:'0991234501', correo:'carlosbravo@fuenteaguaviva.org', password:'Carlos2026' },
+        { id:nextId(), nombre:'Priscila Quintero', rol:'Líder / Jóvenes', ministerio:'Ministerio de jóvenes', contacto:'0960472060', correo:'priscilaquintero@fuenteaguaviva.org', password:'pris123456',
+          celulaEvangelistica:[
+            { id:nextId(), nombre:'Camila Reyes', telefono:'0991112233', fecha:'2 ago 2026', observaciones:'Invitada por una amiga, vino por primera vez este mes.' },
+            { id:nextId(), nombre:'Estefanía Rugel', telefono:'0991112244', fecha:'9 ago 2026', observaciones:'Llegó invitada a la vigilia de jóvenes y decidió quedarse.' },
+            { id:nextId(), nombre:'Bryan Suárez', telefono:'0991112255', fecha:'16 ago 2026', observaciones:'Contacto de la célula evangelística de jóvenes, muy receptivo.' },
+            { id:nextId(), nombre:'Ariana Zapata', telefono:'0991112266', fecha:'23 ago 2026', observaciones:'Invitada por Camila Reyes, asiste regularmente desde entonces.' },
+            { id:nextId(), nombre:'Kevin Molina', telefono:'0991112277', fecha:'30 ago 2026', observaciones:'Nuevo en la célula, se le está dando seguimiento para su consolidación.' }
+          ],
+          celulaDiscipulado:[
+            { id:nextId(), nombre:'Jonathan Pico', observaciones:'Lleva 3 semanas en el proceso, avanzando bien.' },
+            { id:nextId(), nombre:'Estefanía Rugel', observaciones:'Recién graduada de la célula evangelística, inicia discipulado esta semana.' },
+            { id:nextId(), nombre:'Bryan Suárez', observaciones:'Muy comprometido, ya lleva 2 módulos completados.' },
+            { id:nextId(), nombre:'Ariana Zapata', observaciones:'En el módulo de identidad en Cristo, participa activamente.' },
+            { id:nextId(), nombre:'Kevin Molina', observaciones:'Inicia el proceso de discipulado la próxima semana.' }
+          ]
+        }
+      ]
+    },
+    solicitudes: []
+  };
+
+  const sectionMeta = {
+    inicio:      { title:'Inicio', eyebrow:'Bienvenido' },
+    anuncios:    { title:'Anuncios', eyebrow:'Vida de iglesia', addLabel:'Anuncio' },
+    eventos:     { title:'Eventos', eyebrow:'Vida de iglesia', addLabel:'Evento' },
+    ministerios: { title:'Ministerios', eyebrow:'Vida de iglesia', addLabel:'Ministerio' },
+    sermones:    { title:'Sermones', eyebrow:'Vida de iglesia', addLabel:'Sermón' },
+    oficina:     { title:'Oficina pastoral', eyebrow:'Vida de iglesia', addLabel:'Nota' },
+    peticiones:  { title:'Peticiones de oración', eyebrow:'Comunidad' },
+    testimonios: { title:'Testimonios', eyebrow:'Comunidad' },
+    miembros:    { title:'Directorio de miembros', eyebrow:'Administración', addLabel:'Miembro' },
+    perfil:      { title:'Mi perfil', eyebrow:'Mi cuenta' }
+  };
+
+  const ESTADOS_PETICION = ['aceptada','oracion','respondida'];
+  const ESTADO_LABELS = { aceptada:'El pastor aceptó la oración', oracion:'En oración', respondida:'Oración realizada' };
+  const ESTADO_LABEL_ACEPTADA_LIDER = 'El líder del ministerio aceptó la petición de oración';
+  function peticionEstadoLabel(p){
+    const estado = p.estado || 'enviada';
+    if(estado === 'enviada'){
+      return p.ministerio ? `Petición enviada al ${p.ministerio}` : 'Petición enviada al Pastor';
+    }
+    if(estado === 'aceptada'){
+      return p.ministerio ? ESTADO_LABEL_ACEPTADA_LIDER : ESTADO_LABELS.aceptada;
+    }
+    return ESTADO_LABELS[estado] || '';
+  }
+
+
+  const MINISTERIOS_LISTA = [
+    'Ministerio de niños',
+    'Ministerio de jóvenes',
+    'Ministerio adolescentes',
+    'Ministerio de caballeros',
+    'Ministerio de damas',
+    'Ministerio de alabanza',
+    'Ministerio de ujieres'
+  ];
+  function ministerioOptionsHtml(selected){
+    let html = `<option value="" ${!selected?'selected':''}>General / no aplica</option>`;
+    MINISTERIOS_LISTA.forEach(m=>{
+      html += `<option value="${escapeHtml(m)}" ${selected===m?'selected':''}>${escapeHtml(m)}</option>`;
+    });
+    return html;
+  }
+  function dirigidoOptionsHtml(selected){
+    let html = `<option value="" ${!selected?'selected':''}>Pastor</option>`;
+    MINISTERIOS_LISTA.forEach(m=>{
+      html += `<option value="${escapeHtml(m)}" ${selected===m?'selected':''}>${escapeHtml(m)}</option>`;
+    });
+    return html;
+  }
+
+  /* ---------- form field configs per entity (para el modal genérico) ---------- */
+  const formConfigs = {
+    anuncios: [ {key:'titulo', label:'Título', type:'text'}, {key:'fecha', label:'Fecha', type:'text'}, {key:'texto', label:'Detalle', type:'textarea'} ],
+    eventos: [ {key:'titulo', label:'Título', type:'text'}, {key:'fecha', label:'Fecha y hora', type:'text'}, {key:'lugar', label:'Lugar', type:'text'} ],
+    ministerios: [ {key:'nombre', label:'Nombre del ministerio', type:'text'}, {key:'lider', label:'Líder(es)', type:'text'}, {key:'descripcion', label:'Descripción', type:'textarea'} ],
+    sermones: [ {key:'titulo', label:'Título', type:'text'}, {key:'predicador', label:'Predicador', type:'text'}, {key:'fecha', label:'Fecha', type:'text'}, {key:'notas', label:'Notas', type:'textarea'} ],
+    miembros: [
+      {key:'nombre', label:'Nombre completo', type:'text'},
+      {key:'rol', label:'Rol / cargo', type:'text'},
+      {key:'ministerio', label:'Ministerio al que pertenece', type:'select', options:[''].concat(MINISTERIOS_LISTA)},
+      {key:'contacto', label:'Teléfono', type:'text'},
+      {key:'correo', label:'Correo (para iniciar sesión — opcional)', type:'email'},
+      {key:'password', label:'Contraseña temporal (opcional)', type:'password'}
+    ]
+  };
+
+  /* ===================== LOGIN LOGIC ===================== */
+  /* Cuentas de prueba: reemplaza esto por tu validación real (API / auth) cuando conectes el backend. */
+  const demoAccounts = {
+    'nancyalvia@fuenteaguaviva.org':      { password:'Pastor2026', role:'pastor', name:'Pst. Nancy Alvia' },
+    'galoalomoto@fuenteaguaviva.org': { password:'Galo2026',   role:'pastor', name:'Pst. Galo Alomoto' },
+    'secretaria@fuenteaguaviva.org': { password:'Oficina2026', role:'secretaria', name:'Hna. Rebeca Zambrano' }
+  };
+
+  const demoChipCreds = {
+    'pastor-nancy': { email:'nancyalvia@fuenteaguaviva.org',      pass:'Pastor2026' },
+    'pastor-galo':  { email:'galoalomoto@fuenteaguaviva.org', pass:'Galo2026' },
+    'secretaria':   { email:'secretaria@fuenteaguaviva.org', pass:'Oficina2026' },
+    'lider-nataly': { email:'priscilaquintero@fuenteaguaviva.org', pass:'pris123456' },
+    'miembro':      { email:'carlosbravo@fuenteaguaviva.org',     pass:'Carlos2026' }
+  };
+
+  document.querySelectorAll('.demo-chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      const creds = demoChipCreds[chip.dataset.demo];
+      document.getElementById('login-email').value = creds.email;
+      document.getElementById('login-pass').value = creds.pass;
+      document.getElementById('login-error').classList.add('hidden');
+    });
+  });
+
+  document.querySelectorAll('.pass-toggle').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const input = document.getElementById(btn.dataset.target);
+      if(!input) return;
+      const showing = input.type === 'password';
+      input.type = showing ? 'text' : 'password';
+      btn.innerHTML = showing ? ICON_EYE_OFF : ICON_EYE;
+      btn.classList.toggle('showing', showing);
+      btn.setAttribute('aria-label', showing ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    });
+  });
+
+  document.getElementById('login-btn').addEventListener('click', ()=>{
+    const btn = document.getElementById('login-btn');
+    if(btn.disabled) return;
+    const originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>';
+
+    setTimeout(()=>{
+      const email = document.getElementById('login-email').value.trim().toLowerCase();
+      const pass = document.getElementById('login-pass').value;
+      const errorEl = document.getElementById('login-error');
+      const card = document.getElementById('login-card');
+
+      const account = demoAccounts[email];
+      if(account && account.password === pass){
+        errorEl.classList.add('hidden');
+        currentUser = { name:account.name, role:account.role, memberId:null, email };
+        enterApp();
+        return;
+      }
+
+      // Cuentas de miembros / líderes de ministerio creadas por un pastor desde el directorio
+      const member = state.data.miembros.find(m => (m.correo||'').toLowerCase() === email && m.password && m.password === pass);
+      if(member){
+        errorEl.classList.add('hidden');
+        const isLeaderAcct = /l[íi]der/i.test(member.rol||'');
+        currentUser = { name:member.nombre, role: isLeaderAcct ? 'lider' : 'miembro', memberId:member.id, email:member.correo };
+        enterApp();
+        return;
+      }
+
+      errorEl.classList.remove('hidden');
+      card.classList.remove('shake');
+      void card.offsetWidth;
+      card.classList.add('shake');
+      btn.disabled = false;
+      btn.innerHTML = originalHtml;
+    }, 550);
+  });
+
+  function enterApp(){
+    document.getElementById('login-screen').style.transition='opacity .4s ease';
+    document.getElementById('login-screen').style.opacity='0';
+    setTimeout(()=>{
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('app-shell').classList.remove('hidden');
+      stopWaves();
+      setupUserChip();
+      renderSection('inicio');
+    }, 380);
+  }
+
+  function setupUserChip(){
+    const role = currentUser.role;
+    document.getElementById('avatar-initials').textContent = (currentUser.name[0]||'M').toUpperCase();
+    document.getElementById('user-name-display').textContent = currentUser.name;
+    let roleLabel = 'Miembro de la iglesia';
+    if(role === 'pastor'){
+      roleLabel = 'Pastor / Administrador';
+    } else if(role === 'lider'){
+      const member = state.data.miembros.find(m=>m.id===currentUser.memberId);
+      roleLabel = (member && member.rol) ? member.rol : 'Líder de ministerio';
+    }
+    document.getElementById('user-role-display').textContent = roleLabel;
+    document.getElementById('admin-nav-group').classList.toggle('hidden', role !== 'pastor');
+    document.getElementById('oficina-nav-group').classList.toggle('hidden', !(role === 'pastor' || role === 'secretaria'));
+    document.getElementById('content-nav-group').classList.toggle('hidden', role === 'secretaria');
+    document.getElementById('comunidad-nav-group').classList.toggle('hidden', role === 'secretaria');
+    document.getElementById('profile-nav-group').classList.toggle('hidden', !currentUser.memberId);
+  }
+
+  document.getElementById('logout-btn').addEventListener('click', ()=>{
+    document.getElementById('app-shell').classList.add('hidden');
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('login-screen').style.opacity='1';
+    document.getElementById('login-card').style.animation='none';
+    void document.getElementById('login-card').offsetWidth;
+    document.getElementById('login-card').style.animation='riseIn .9s cubic-bezier(.16,.9,.35,1) both';
+    // el botón "Entrar" pudo quedar deshabilitado/con spinner del login anterior; se restaura siempre
+    const loginBtn = document.getElementById('login-btn');
+    loginBtn.disabled = false;
+    loginBtn.textContent = 'Entrar';
+    document.getElementById('login-email').value = '';
+    document.getElementById('login-pass').value = '';
+    showLoginView();
+    startWaves();
+  });
+
+  /* ===================== REGISTRO DE MIEMBROS (solicitud pendiente de aprobación) ===================== */
+  function showLoginView(){
+    document.getElementById('register-view').classList.add('hidden');
+    document.getElementById('login-view').classList.remove('hidden');
+    document.getElementById('register-error').classList.add('hidden');
+  }
+  function showRegisterView(){
+    document.getElementById('login-view').classList.add('hidden');
+    document.getElementById('register-view').classList.remove('hidden');
+    document.getElementById('login-error').classList.add('hidden');
+  }
+  document.getElementById('show-register-btn').addEventListener('click', showRegisterView);
+  document.getElementById('show-login-btn').addEventListener('click', showLoginView);
+  bindPasswordChecklist('reg-pass', 'reg-pass-reqs');
+
+  /* términos y condiciones */
+  const termsOverlay = document.getElementById('terms-overlay');
+  document.getElementById('show-terms-btn').addEventListener('click', ()=> termsOverlay.classList.remove('hidden'));
+  document.getElementById('show-terms-btn-login').addEventListener('click', ()=> termsOverlay.classList.remove('hidden'));
+  document.getElementById('terms-close').addEventListener('click', ()=> termsOverlay.classList.add('hidden'));
+  termsOverlay.addEventListener('click', (e)=>{ if(e.target===termsOverlay) termsOverlay.classList.add('hidden'); });
+
+  document.getElementById('register-btn').addEventListener('click', ()=>{
+    const btn = document.getElementById('register-btn');
+    if(btn.disabled) return;
+
+    const nombre = document.getElementById('reg-nombre').value.trim();
+    const correo = document.getElementById('reg-correo').value.trim().toLowerCase();
+    const ministerio = document.getElementById('reg-ministerio').value;
+    const password = document.getElementById('reg-pass').value;
+    const aceptaTerminos = document.getElementById('reg-terms').checked;
+    const errEl = document.getElementById('register-error');
+
+    const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+    if(!nombre || !correoValido || !password){
+      errEl.textContent = 'Completa todos los campos con un correo válido.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+    if(!passwordIsValid(password)){
+      errEl.textContent = 'La contraseña no cumple con los requisitos de seguridad indicados abajo.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+    if(!aceptaTerminos){
+      errEl.textContent = 'Debes aceptar los términos y condiciones para continuar.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+    const yaExiste = demoAccounts[correo]
+      || state.data.miembros.some(m => (m.correo||'').toLowerCase() === correo)
+      || state.solicitudes.some(s => s.correo.toLowerCase() === correo);
+    if(yaExiste){
+      errEl.textContent = 'Ese correo ya está registrado o tiene una solicitud pendiente.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+    errEl.classList.add('hidden');
+
+    const originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>';
+    setTimeout(()=>{
+      state.solicitudes.push({ id:nextId(), nombre, correo, ministerio, password, fecha:'Hoy' });
+      ['reg-nombre','reg-correo','reg-pass'].forEach(id=> document.getElementById(id).value='');
+      document.getElementById('reg-ministerio').value='';
+      document.getElementById('reg-terms').checked = false;
+      btn.disabled = false;
+      btn.innerHTML = originalHtml;
+      showLoginView();
+      showToast('Solicitud enviada. Un pastor debe aprobarla antes de que puedas ingresar.');
+    }, 550);
+  });
+
+  /* ===================== NAV ===================== */
+  document.querySelectorAll('.nav-item').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      renderSection(btn.dataset.section);
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+  document.getElementById('mobile-menu-btn').addEventListener('click', ()=>{
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+
+  function updateMiembrosBadge(){
+    const badge = document.getElementById('miembros-badge');
+    if(!badge) return;
+    const isPastor = currentUser && currentUser.role === 'pastor';
+    const pendientes = state.solicitudes.length;
+    if(!isPastor || pendientes === 0){ badge.classList.add('hidden'); return; }
+    badge.textContent = pendientes;
+    badge.classList.remove('hidden');
+  }
+
+  function renderSection(section){
+    state.section = section;
+    document.querySelectorAll('.nav-item').forEach(b=> b.classList.toggle('active', b.dataset.section===section));
+    const meta = sectionMeta[section];
+    document.getElementById('section-title').textContent = meta.title;
+    document.getElementById('section-eyebrow').textContent = meta.eyebrow;
+    updateMiembrosBadge();
+
+    const addBtn = document.getElementById('add-btn');
+    const isPastor = currentUser.role === 'pastor';
+    const isLeader = currentUser.role === 'lider';
+    const contentSections = ['anuncios','eventos','sermones'];
+    if((isPastor || isLeader) && contentSections.includes(section)){
+      addBtn.classList.remove('hidden');
+      document.getElementById('add-btn-label').textContent = meta.addLabel;
+      addBtn.onclick = ()=> openModal(section, null);
+    } else if(isPastor && (section==='miembros' || section==='ministerios')){
+      addBtn.classList.remove('hidden');
+      document.getElementById('add-btn-label').textContent = meta.addLabel;
+      addBtn.onclick = ()=> openModal(section, null);
+    } else {
+      addBtn.classList.add('hidden');
+    }
+
+    const area = document.getElementById('content-area');
+    area.innerHTML = '';
+    // route transition: restart the fade/slide-in animation on every section change
+    area.classList.remove('content-fade');
+    void area.offsetWidth;
+    area.classList.add('content-fade');
+
+    if(section === 'inicio'){ renderInicio(area); return; }
+    if(section === 'peticiones'){ renderPeticiones(area); return; }
+    if(section === 'testimonios'){ renderTestimonios(area); return; }
+    if(section === 'perfil'){ renderPerfil(area); return; }
+    if(section === 'oficina'){ renderOficinaPastoral(area); return; }
+    if(['anuncios','eventos','ministerios','sermones','miembros'].includes(section)){
+      renderCollection(area, section);
+      return;
+    }
+  }
+
+  function renderInicio(area){
+    const isPastor = currentUser.role === 'pastor';
+    const isSecretaria = currentUser.role === 'secretaria';
+    const wrap = document.createElement('div');
+
+    if(isSecretaria){
+      wrap.appendChild(sectionSubheading(welcomeGreeting(currentUser.name), 'Desde aquí gestionas la Oficina Pastoral: actas, registro eclesiástico, seguimiento de líderes, y el registro de diezmos y ofrendas por ministerio y de toda la congregación.'));
+      const totalDiezmos = state.data.diezmos.reduce((s,d)=> s + Number(d.monto||0), 0);
+      const totalGastos = state.data.gastos.reduce((s,g)=> s + Number(g.monto||0), 0);
+      const notasOficina = state.data.actas.length + state.data.registroEclesiastico.length + state.data.seguimientoLideres.length;
+      const stats = document.createElement('div');
+      stats.className = 'stat-row';
+      stats.innerHTML = `
+        <div class="stat-card"><div class="num">${notasOficina}</div><div class="lbl">Notas de oficina</div></div>
+        <div class="stat-card"><div class="num">${state.data.consejeria.length}</div><div class="lbl">Casos de consejería (confidencial)</div></div>
+        <div class="stat-card"><div class="num">$${totalDiezmos.toFixed(2)}</div><div class="lbl">Diezmos y ofrendas registrados</div></div>
+        <div class="stat-card"><div class="num">$${totalGastos.toFixed(2)}</div><div class="lbl">Gastos y compras registrados</div></div>
+      `;
+      wrap.appendChild(stats);
+      const goBtn = document.createElement('button');
+      goBtn.className = 'btn-primary';
+      goBtn.style.cssText = 'margin-top:18px; max-width:240px;';
+      goBtn.textContent = 'Ir a Oficina pastoral →';
+      goBtn.addEventListener('click', ()=> renderSection('oficina'));
+      wrap.appendChild(goBtn);
+      area.appendChild(wrap);
+      return;
+    }
+
+    if(isPastor){
+      wrap.appendChild(sectionSubheading('Bienvenido, '+currentUser.name, 'Este es el resumen general de la iglesia. Desde el menú puedes crear, editar o eliminar anuncios, eventos, ministerios, sermones y miembros.'));
+      const stats = document.createElement('div');
+      stats.className = 'stat-row';
+      stats.innerHTML = `
+        <div class="stat-card"><div class="num">${state.data.miembros.length}</div><div class="lbl">Miembros registrados</div></div>
+        <div class="stat-card"><div class="num">${state.data.eventos.length}</div><div class="lbl">Próximos eventos</div></div>
+        <div class="stat-card"><div class="num">${state.data.peticiones.filter(p=>p.estado!=='respondida').length}</div><div class="lbl">Peticiones activas</div></div>
+        <div class="stat-card"><div class="num">${state.data.testimonios.length}</div><div class="lbl">Testimonios compartidos</div></div>
+      `;
+      wrap.appendChild(stats);
+
+      const grid = document.createElement('div');
+      grid.className = 'home-grid';
+      grid.appendChild(homePanel(
+        'Peticiones activas',
+        state.data.peticiones.slice(0,3),
+        'No hay peticiones pendientes.',
+        'peticiones',
+        p => rowHtml(p.nombre, `${peticionEstadoLabel(p)} · ${p.texto}`)
+      ));
+      grid.appendChild(homePanel(
+        'Últimos testimonios',
+        state.data.testimonios.slice(0,3),
+        'Todavía no se han compartido testimonios.',
+        'testimonios',
+        t => rowHtml(t.nombre, t.texto)
+      ));
+      grid.appendChild(homePanel(
+        'Próximos eventos',
+        state.data.eventos.slice(0,3),
+        'No hay eventos programados.',
+        'eventos',
+        e => rowHtml(e.titulo, `${e.fecha} · ${e.lugar||''}`)
+      ));
+      grid.appendChild(homePanel(
+        'Miembros recientes',
+        state.data.miembros.slice(0,3),
+        'Todavía no hay miembros en el directorio.',
+        'miembros',
+        m => rowHtml(m.nombre, m.rol)
+      ));
+      grid.appendChild(homePanel(
+        'Últimos anuncios',
+        state.data.anuncios.slice(0,3),
+        'Todavía no hay anuncios.',
+        'anuncios',
+        a => rowHtml(a.titulo, a.texto)
+      ));
+      wrap.appendChild(grid);
+    } else {
+      wrap.appendChild(sectionSubheading(welcomeGreeting(currentUser.name), '"Ríos de agua viva correrán de su interior." — Juan 7:38. Aquí encontrarás la vida de nuestra iglesia esta semana.'));
+      const stats = document.createElement('div');
+      stats.className = 'stat-row';
+      stats.innerHTML = `
+        <div class="stat-card"><div class="num">${state.data.eventos.length}</div><div class="lbl">Próximos eventos</div></div>
+        <div class="stat-card"><div class="num">${state.data.anuncios.length}</div><div class="lbl">Anuncios recientes</div></div>
+        <div class="stat-card"><div class="num">${state.data.sermones.filter(s=>s.visible).length}</div><div class="lbl">Sermones disponibles</div></div>
+      `;
+      wrap.appendChild(stats);
+
+      if(currentUser.role === 'miembro'){
+        const ctaRow = document.createElement('div');
+        ctaRow.className = 'cta-row';
+        ctaRow.innerHTML = `
+          <div class="cta-card">
+            <h4>¿Tienes una petición de oración?</h4>
+            <p>Nuestro equipo pastoral y la congregación orarán contigo.</p>
+            <button data-go="peticiones">Compartir petición</button>
+          </div>
+          <div class="cta-card">
+            <h4>¿Dios hizo algo en tu vida?</h4>
+            <p>Comparte tu testimonio para animar a la congregación.</p>
+            <button data-go="testimonios">Compartir testimonio</button>
+          </div>
+        `;
+        ctaRow.querySelectorAll('[data-go]').forEach(b=>{
+          b.addEventListener('click', ()=> renderSection(b.dataset.go));
+        });
+        wrap.appendChild(ctaRow);
+      }
+
+      const grid = document.createElement('div');
+      grid.className = 'home-grid';
+      grid.appendChild(homePanel(
+        'Anuncios recientes',
+        state.data.anuncios.slice(0,3),
+        'Todavía no hay anuncios.',
+        'anuncios',
+        a => rowHtml(a.titulo, a.texto)
+      ));
+      grid.appendChild(homePanel(
+        'Próximos eventos',
+        state.data.eventos.slice(0,3),
+        'No hay eventos programados.',
+        'eventos',
+        e => rowHtml(e.titulo, `${e.fecha} · ${e.lugar||''}`)
+      ));
+      grid.appendChild(homePanel(
+        'Sermones recientes',
+        state.data.sermones.filter(s=>s.visible).slice(0,3),
+        'Todavía no hay sermones publicados.',
+        'sermones',
+        s => rowHtml(s.titulo, `${s.predicador||''} · ${s.fecha||''}`)
+      ));
+      wrap.appendChild(grid);
+    }
+    area.appendChild(wrap);
+  }
+
+  function rowHtml(title, sub){
+    return `<div class="lr-main"><h4>${escapeHtml(title||'')}</h4><p>${escapeHtml(sub||'')}</p></div>`;
+  }
+
+  function homePanel(title, items, emptyText, viewAllSection, rowRenderer){
+    const box = document.createElement('div');
+    box.className = 'home-panel';
+    const head = document.createElement('div');
+    head.className = 'home-panel-head';
+    head.innerHTML = `<h3>${escapeHtml(title)}</h3><button type="button">Ver todo →</button>`;
+    head.querySelector('button').addEventListener('click', ()=> renderSection(viewAllSection));
+    box.appendChild(head);
+    if(!items.length){
+      const empty = document.createElement('div');
+      empty.className = 'home-panel-empty';
+      empty.textContent = emptyText;
+      box.appendChild(empty);
+    } else {
+      items.forEach(item=>{
+        const row = document.createElement('div');
+        row.className = 'list-row';
+        row.innerHTML = rowRenderer(item);
+        box.appendChild(row);
+      });
+    }
+    return box;
+  }
+
+  function sectionSubheading(title, text){
+    const d = document.createElement('div');
+    d.style.marginBottom = '22px';
+    d.innerHTML = `<h3 style="margin:0 0 6px; font-size:19px;">${escapeHtml(title)}</h3><p style="margin:0; color:var(--ink-70); font-size:13.5px; max-width:640px; line-height:1.55;">${escapeHtml(text)}</p>`;
+    return d;
+  }
+
+  /* ---------- colecciones genéricas: anuncios / eventos / ministerios / sermones / miembros ---------- */
+  function canManageItem(section, item){
+    const isPastor = currentUser.role === 'pastor';
+    const isLeader = currentUser.role === 'lider';
+    if(section==='miembros' || section==='ministerios') return isPastor;
+    if(['anuncios','eventos','sermones'].includes(section)){
+      if(isPastor) return item.autor === currentUser.name;
+      if(isLeader){
+        const ownMinisterio = getOwnMinisterio();
+        return !!ownMinisterio && item.autorMinisterio === ownMinisterio;
+      }
+      return false;
+    }
+    return isPastor || isLeader;
+  }
+
+  function isMemberLeader(m){
+    return /l[íi]der/i.test(m.rol||'');
+  }
+
+  function memberFilterBar(){
+    const options = [
+      {key:'todos', label:'Todos'},
+      {key:'miembros', label:'Miembros'},
+      {key:'lideres', label:'Líderes de ministerio'}
+    ];
+    const wrap = document.createElement('div');
+    wrap.className = 'seg-filter';
+    const activeIdx = Math.max(0, options.findIndex(o=>o.key===state.memberFilter));
+    wrap.innerHTML = `
+      <div class="seg-filter-thumb" style="--seg-idx:${activeIdx}; --seg-count:${options.length};"></div>
+      ${options.map((o,i)=>`<button type="button" class="seg-filter-btn ${o.key===state.memberFilter?'active':''}" data-key="${o.key}">${o.label}</button>`).join('')}
+    `;
+    wrap.querySelectorAll('.seg-filter-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        if(state.memberFilter === btn.dataset.key) return;
+        state.memberFilter = btn.dataset.key;
+        renderSection('miembros');
+      });
+    });
+    return wrap;
+  }
+
+  function renderCollection(area, section){
+    const isPastor = currentUser.role === 'pastor';
+    const isLeader = currentUser.role === 'lider';
+    const sectionCanManage = section==='miembros' || section==='ministerios' ? isPastor : (isPastor || isLeader);
+
+    if(section==='miembros' && isPastor){
+      area.appendChild(renderSolicitudesPanel());
+      area.appendChild(memberFilterBar());
+    }
+
+    let items = (section==='sermones' && !sectionCanManage)
+      ? state.data.sermones.filter(s=>s.visible)
+      : state.data[section];
+    if(section==='miembros'){
+      if(state.memberFilter === 'miembros') items = items.filter(m=> !isMemberLeader(m));
+      else if(state.memberFilter === 'lideres') items = items.filter(m=> isMemberLeader(m));
+    }
+    if(!items.length){
+      area.appendChild(emptyState(section, sectionCanManage));
+      return;
+    }
+    const grid = document.createElement('div');
+    grid.className = section==='miembros' ? '' : 'panel-grid';
+    items.forEach(item=>{
+      const itemCanManage = canManageItem(section, item);
+      grid.appendChild(section==='miembros' ? memberRow(item, itemCanManage) : entityCard(section, item, itemCanManage));
+    });
+    area.appendChild(grid);
+  }
+
+  function renderSolicitudesPanel(){
+    const box = document.createElement('div');
+    box.className = 'home-panel';
+    box.style.marginBottom = '18px';
+    const head = document.createElement('div');
+    head.className = 'home-panel-head';
+    head.innerHTML = `<h3>Solicitudes de registro pendientes</h3>`;
+    box.appendChild(head);
+    if(!state.solicitudes.length){
+      const empty = document.createElement('div');
+      empty.className = 'home-panel-empty';
+      empty.textContent = 'No hay solicitudes pendientes por ahora.';
+      box.appendChild(empty);
+      return box;
+    }
+    state.solicitudes.forEach(s=>{
+      const row = document.createElement('div');
+      row.className = 'list-row';
+      row.innerHTML = `
+        <div class="lr-main">
+          <h4>${escapeHtml(s.nombre)} ${s.ministerio ? `<span class="pill ministerio">${escapeHtml(s.ministerio)}</span>` : ''}</h4>
+          <p>${escapeHtml(s.correo)} · ${escapeHtml(s.ministerio || 'General / no aplica')}</p>
+          <div class="meta" style="margin-top:4px;">${escapeHtml(s.fecha)}</div>
+        </div>
+      `;
+      const actions = document.createElement('div');
+      actions.className = 'lr-actions';
+      const approveBtn = document.createElement('button');
+      approveBtn.className = 'icon-btn';
+      approveBtn.title = 'Aprobar solicitud';
+      approveBtn.classList.add('icon-check');
+      approveBtn.innerHTML = ICON_CHECK;
+      approveBtn.addEventListener('click', ()=>{
+        state.data.miembros.unshift({ id:nextId(), nombre:s.nombre, rol:'Miembro', ministerio:s.ministerio||'', contacto:'', correo:s.correo, password:s.password });
+        state.solicitudes = state.solicitudes.filter(x=>x.id!==s.id);
+        renderSection('miembros');
+        showToast('Cuenta aprobada, ya puede iniciar sesión');
+      });
+      actions.appendChild(approveBtn);
+      actions.appendChild(iconBtn('delete', ()=>{
+        state.solicitudes = state.solicitudes.filter(x=>x.id!==s.id);
+        renderSection('miembros');
+        showToast('Solicitud rechazada');
+      }, true));
+      row.appendChild(actions);
+      box.appendChild(row);
+    });
+    return box;
+  }
+
+  function emptyState(section, canManage){
+    const d = document.createElement('div');
+    d.className = 'empty-state';
+    const labels = {
+      anuncios:'Todavía no hay anuncios.', eventos:'Todavía no hay eventos programados.',
+      ministerios:'Todavía no hay ministerios registrados.', sermones:'Todavía no hay sermones publicados.',
+      miembros:'Todavía no hay miembros en el directorio.', peticiones:'No hay peticiones de oración por ahora.',
+      oficina:'Todavía no hay notas en la oficina pastoral.', testimonios:'Todavía no se han compartido testimonios.'
+    };
+    const noBtnSections = ['anuncios','eventos','sermones','oficina','testimonios'];
+    const showAddBtn = canManage && section !== 'peticiones' && !noBtnSections.includes(section);
+    let hint;
+    if(section==='peticiones'){
+      hint = 'Las peticiones las envían los miembros y líderes desde este mismo apartado.';
+    } else if(section==='testimonios'){
+      hint = 'Comparte el primero desde el formulario de arriba.';
+    } else if(showAddBtn){
+      hint = 'Usa el botón "Agregar" para crear el primero.';
+    } else if(canManage){
+      hint = 'Usa el botón de arriba para crear el primero.';
+    } else {
+      hint = 'Vuelve pronto, esta sección se actualiza seguido.';
+    }
+    d.innerHTML = `<h3>${labels[section]}</h3><p>${hint}</p>`;
+    area_addBtnMirror(d, section, showAddBtn);
+    return d;
+  }
+  function area_addBtnMirror(container, section, canManage){
+    if(!canManage) return;
+    const b = document.createElement('button');
+    b.className='add-btn'; b.style.margin='0 auto'; b.textContent='+ Agregar';
+    b.onclick = ()=> openModal(section, null);
+    container.appendChild(b);
+  }
+
+  function entityCard(section, item, canManage){
+    const el = document.createElement('div');
+    el.className = 'card';
+    const tagLabel = {anuncios:item.fecha, eventos:item.fecha, ministerios:'Ministerio', sermones:item.fecha, oficina:item.fecha}[section];
+    const title = item.titulo || item.nombre;
+    const bodyText = item.texto || item.descripcion || item.notas || '';
+    const metaLine = section==='eventos' ? item.lugar : (section==='ministerios' ? item.lider : (section==='sermones' ? item.predicador : ''));
+
+    el.innerHTML = `
+      <span class="tag">${escapeHtml(tagLabel||'')}</span>
+      ${section==='sermones' ? `<span class="pill ${item.visible?'oracion':''}" style="float:right;">${item.visible?'Visible a miembros':'Privado'}</span>` : ''}
+      <h3>${escapeHtml(title)}</h3>
+      ${metaLine ? `<div class="meta">${escapeHtml(metaLine)}</div>` : ''}
+      <p>${escapeHtml(bodyText)}</p>
+      ${item.autor && ['anuncios','eventos','sermones','oficina'].includes(section) ? `<div class="meta" style="margin-top:6px; opacity:.65;">Publicado por ${escapeHtml(item.autor)}</div>` : ''}
+    `;
+    if(canManage){
+      const footer = document.createElement('div');
+      footer.className = 'card-footer';
+      if(section==='sermones'){
+        const label = document.createElement('label');
+        label.className = 'mini-switch';
+        label.innerHTML = `<input type="checkbox" ${item.visible?'checked':''}><span class="track"></span><span>Mostrar a miembros</span>`;
+        label.querySelector('input').addEventListener('change', (e)=>{
+          item.visible = e.target.checked;
+          renderSection('sermones');
+        });
+        footer.appendChild(label);
+      }
+      const actions = document.createElement('div');
+      actions.className = 'card-actions';
+      actions.style.paddingTop = '0';
+      actions.appendChild(iconBtn('edit', ()=> openModal(section, item)));
+      actions.appendChild(iconBtn('delete', ()=> removeItem(section, item.id), true));
+      footer.appendChild(actions);
+      el.appendChild(footer);
+    }
+    return el;
+  }
+
+  function memberRow(item, isPastor){
+    const el = document.createElement('div');
+    el.className = 'list-row';
+    el.innerHTML = `
+      <div class="lr-main">
+        <h4>${escapeHtml(item.nombre)} ${item.ministerio ? `<span class="pill ministerio">${escapeHtml(item.ministerio)}</span>` : ''}</h4>
+        <p>${escapeHtml(item.rol)}${item.contacto ? ' · '+escapeHtml(item.contacto) : ''}</p>
+      </div>
+    `;
+    if(isPastor){
+      const actions = document.createElement('div');
+      actions.className = 'lr-actions';
+      actions.appendChild(iconBtn('edit', ()=> openModal('miembros', item)));
+      actions.appendChild(iconBtn('delete', ()=> removeItem('miembros', item.id), true));
+      el.appendChild(actions);
+    }
+    return el;
+  }
+
+  function iconBtn(kind, onClick, danger){
+    const b = document.createElement('button');
+    b.className = 'icon-btn' + (danger ? ' danger':'');
+    b.title = kind==='edit' ? 'Editar' : 'Eliminar';
+    b.innerHTML = kind==='edit'
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>';
+    b.addEventListener('click', onClick);
+    return b;
+  }
+
+  function confirmDialog(message){
+    return new Promise(resolve=>{
+      const ov = document.createElement('div');
+      ov.className = 'modal-overlay';
+      ov.innerHTML = `
+        <div class="modal" style="max-width:360px;">
+          <h3>Confirmar</h3>
+          <p style="margin:-8px 0 20px; color:var(--ink-70); font-size:13.5px; line-height:1.5;">${escapeHtml(message)}</p>
+          <div class="modal-actions">
+            <button class="modal-cancel" type="button">Cancelar</button>
+            <button class="modal-save" type="button" style="background:#c0392b;">Eliminar</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(ov);
+      const cleanup = (result)=>{ ov.remove(); resolve(result); };
+      ov.querySelector('.modal-cancel').addEventListener('click', ()=> cleanup(false));
+      ov.querySelector('.modal-save').addEventListener('click', ()=> cleanup(true));
+      ov.addEventListener('click', (e)=>{ if(e.target===ov) cleanup(false); });
+    });
+  }
+
+  async function removeItem(section, id){
+    const ok = await confirmDialog('¿Eliminar este elemento? Esta acción no se puede deshacer.');
+    if(!ok) return;
+    state.data[section] = state.data[section].filter(i=>i.id!==id);
+    renderSection(section);
+    showToast('Elemento eliminado');
+  }
+
+  /* ---------- peticiones de oración ---------- */
+  function getOwnMinisterio(){
+    const member = state.data.miembros.find(m=>m.id===currentUser.memberId);
+    return member ? (member.ministerio||'') : '';
+  }
+
+  function peticionesVisibles(){
+    const isPastor = currentUser.role === 'pastor';
+    if(isPastor) return state.data.peticiones;
+    const isLeader = currentUser.role === 'lider';
+    const ownMinisterio = isLeader ? getOwnMinisterio() : '';
+    return state.data.peticiones.filter(p=>{
+      if(!p.ministerio) return true; // general: se comparte con toda la comunidad
+      if(p.nombre === currentUser.name) return true; // el autor siempre ve su propia petición
+      if(isLeader && ownMinisterio && p.ministerio === ownMinisterio) return true; // solo el líder de ese ministerio
+      return false; // petición privada de otro ministerio: no se muestra
+    });
+  }
+
+  function peticionComposeBox(){
+    const member = currentUser.memberId ? state.data.miembros.find(m=>m.id===currentUser.memberId) : null;
+    const ownMinisterio = member ? (member.ministerio||'') : '';
+    const box = document.createElement('div');
+    box.className = 'compose-box';
+    box.innerHTML = `
+      <span class="eyebrow">Escribir</span>
+      <h3>Comparte tu petición</h3>
+      <div style="font-size:12.5px; color:var(--aqua-soft); margin:-8px 0 14px;">Nuestro equipo pastoral y la congregación orarán contigo.</div>
+      <textarea data-key="texto" placeholder="Escribe tu petición de oración..."></textarea>
+      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--aqua-soft); margin:2px 0 6px;">Dirigido a</label>
+      <select data-key="dirigido">${dirigidoOptionsHtml(ownMinisterio)}</select>
+      <div style="font-size:11.5px; color:var(--aqua-soft); margin:-6px 0 10px;">Si eliges un ministerio, la petición solo la verá ese líder y el pastor.</div>
+      <button class="compose-submit" type="button">Enviar</button>
+    `;
+    attachRipple(box.querySelector('.compose-submit'));
+    box.querySelector('.compose-submit').addEventListener('click', ()=>{
+      const textoEl = box.querySelector('[data-key="texto"]');
+      const texto = textoEl.value.trim();
+      if(!texto){ showToast('Escribe tu petición antes de enviar'); return; }
+      const dirigidoSelect = box.querySelector('[data-key="dirigido"]');
+      const ministerio = dirigidoSelect.value;
+      const dirigidoA = ministerio ? 'lider' : 'pastor';
+      state.data.peticiones.unshift({ id:nextId(), nombre: currentUser.name, autorMinisterio: ownMinisterio, texto, dirigidoA, ministerio, fecha:'Hoy', estado:'enviada' });
+      textoEl.value = '';
+      dirigidoSelect.value = ownMinisterio;
+      renderSection('peticiones');
+      showToast(ministerio ? 'Petición enviada al '+ministerio : 'Petición enviada al Pastor');
+    });
+    return box;
+  }
+
+  function renderPeticiones(area){
+    const isPastor = currentUser.role === 'pastor';
+    const isLeader = currentUser.role === 'lider';
+    const ownMinisterio = isLeader ? getOwnMinisterio() : '';
+
+    if(!isPastor){
+      area.appendChild(peticionComposeBox());
+    }
+
+    const listWrap = document.createElement('div');
+    const visibles = peticionesVisibles();
+    if(!visibles.length){
+      listWrap.appendChild(emptyState('peticiones', isPastor));
+    } else {
+      visibles.forEach(p=>{
+        const estado = p.estado || 'enviada';
+        const estadoLabel = peticionEstadoLabel(p);
+        const row = document.createElement('div');
+        row.className = 'list-row prayer-row' + (estado==='oracion' ? ' oracion' : '');
+        row.innerHTML = `
+          <div class="lr-main">
+            <h4>${escapeHtml(p.nombre)} <span class="pill ${estado==='oracion'?'oracion':''}" style="margin-left:6px;">${escapeHtml(estadoLabel)}</span>${p.ministerio ? `<span class="pill ministerio">🔒 ${escapeHtml(p.ministerio)}</span>` : ''}</h4>
+            ${p.autorMinisterio ? `<div class="meta" style="margin-top:1px;">${escapeHtml(p.autorMinisterio)}</div>` : ''}
+            <p>${escapeHtml(p.texto)}</p>
+            <div class="meta" style="margin-top:4px;">${escapeHtml(p.fecha)}</div>
+          </div>
+        `;
+        const actions = document.createElement('div');
+        actions.className = 'lr-actions';
+        actions.style.flexWrap = 'wrap';
+
+        const canChangeEstado = isPastor || (isLeader && p.ministerio && p.ministerio === ownMinisterio);
+        if(canChangeEstado){
+          const select = document.createElement('select');
+          select.className = 'estado-select';
+          const enviadaOpt = document.createElement('option');
+          enviadaOpt.value = 'enviada';
+          enviadaOpt.textContent = peticionEstadoLabel(Object.assign({}, p, {estado:'enviada'}));
+          if(estado==='enviada') enviadaOpt.selected = true;
+          select.appendChild(enviadaOpt);
+          ESTADOS_PETICION.forEach(key=>{
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.textContent = peticionEstadoLabel(Object.assign({}, p, {estado:key}));
+            if(key===estado) opt.selected = true;
+            select.appendChild(opt);
+          });
+          select.addEventListener('change', ()=>{
+            const next = select.value;
+            if(next === 'respondida'){
+              state.data.peticiones = state.data.peticiones.filter(i=>i.id!==p.id);
+              renderSection('peticiones');
+              showToast('Oración realizada — petición archivada');
+            } else {
+              p.estado = next;
+              renderSection('peticiones');
+              showToast('Estado actualizado: ' + peticionEstadoLabel(p));
+            }
+          });
+          actions.appendChild(select);
+        }
+
+        if(isPastor){
+          const delegar = document.createElement('select');
+          delegar.className = 'estado-select';
+          delegar.title = 'Delegar esta petición a un líder de ministerio';
+          delegar.innerHTML = dirigidoOptionsHtml(p.ministerio);
+          delegar.addEventListener('change', ()=>{
+            p.ministerio = delegar.value;
+            p.dirigidoA = delegar.value ? 'lider' : 'pastor';
+            p.estado = 'enviada';
+            renderSection('peticiones');
+            showToast(delegar.value ? 'Petición enviada al '+delegar.value : 'Petición marcada como general');
+          });
+          actions.appendChild(delegar);
+          actions.appendChild(iconBtn('delete', ()=> removeItem('peticiones', p.id), true));
+        }
+
+        if(actions.children.length){ row.appendChild(actions); }
+        listWrap.appendChild(row);
+      });
+    }
+    area.appendChild(listWrap);
+  }
+
+  /* ---------- testimonios ---------- */
+  /* ---------- oficina pastoral ---------- */
+  const OFICINA_TABS = [
+    {key:'actas', label:'📋 Actas y decisiones'},
+    {key:'registro', label:'⛪ Registro eclesiástico'},
+    {key:'lideres', label:'🧭 Seguimiento de líderes'},
+    {key:'consejeria', label:'🤝 Consejería pastoral'},
+    {key:'diezmos', label:'💰 Diezmos, ofrendas y gastos'}
+  ];
+
+  function renderOficinaPastoral(area){
+    const isPastor = currentUser.role === 'pastor';
+    const isSecretaria = currentUser.role === 'secretaria';
+    if(!isPastor && !isSecretaria){
+      const d = document.createElement('div');
+      d.className = 'empty-state';
+      d.innerHTML = `<h3>Sección restringida</h3><p>La Oficina pastoral es de uso exclusivo del pastor y de la cuenta de Secretaría.</p>`;
+      area.appendChild(d);
+      return;
+    }
+    if(!state.oficinaTab) state.oficinaTab = 'actas';
+
+    const tabBar = document.createElement('div');
+    tabBar.className = 'oficina-tabs';
+    tabBar.innerHTML = OFICINA_TABS.map(t=>`<button type="button" class="oficina-tab ${state.oficinaTab===t.key?'active':''}" data-tab="${t.key}">${escapeHtml(t.label)}</button>`).join('');
+    tabBar.querySelectorAll('.oficina-tab').forEach(btn=>{
+      btn.addEventListener('click', ()=>{ state.oficinaTab = btn.dataset.tab; renderSection('oficina'); });
+    });
+    area.appendChild(tabBar);
+
+    const body = document.createElement('div');
+    body.style.marginTop = '18px';
+    area.appendChild(body);
+
+    const activeTab = OFICINA_TABS.find(t=>t.key===state.oficinaTab);
+    if(activeTab.key === 'actas'){
+      renderActas(body, isPastor, isSecretaria);
+    } else if(activeTab.key === 'registro'){
+      renderRegistroEclesiastico(body, isPastor, isSecretaria);
+    } else if(activeTab.key === 'lideres'){
+      renderSeguimientoLideres(body, isPastor, isSecretaria);
+    } else if(activeTab.key === 'consejeria'){
+      renderConsejeria(body, isPastor, isSecretaria);
+    } else if(activeTab.key === 'diezmos'){
+      renderDiezmos(body, isPastor, isSecretaria);
+    }
+  }
+
+  function oficinaListRow(item, onEdit, onDelete){
+    const row = document.createElement('div');
+    row.className = 'list-row';
+    row.innerHTML = `
+      <div class="lr-main">
+        <h4>${escapeHtml(item.titulo)}</h4>
+        ${item.texto ? `<p>${escapeHtml(item.texto)}</p>` : ''}
+        <div class="meta" style="margin-top:4px;">${escapeHtml(item.fecha||'')}${item.autor ? ' · Publicado por '+escapeHtml(item.autor) : ''}</div>
+      </div>
+    `;
+    if(onEdit || onDelete){
+      const actions = document.createElement('div');
+      actions.className = 'lr-actions';
+      if(onEdit) actions.appendChild(iconBtn('edit', onEdit));
+      if(onDelete) actions.appendChild(iconBtn('delete', onDelete, true));
+      row.appendChild(actions);
+    }
+    return row;
+  }
+
+  function renderActas(body, isPastor, isSecretaria){
+    const intro = document.createElement('p');
+    intro.style.cssText = 'font-size:12.5px; color:var(--ink-50); margin:-4px 0 16px;';
+    intro.textContent = 'Aquí quedan los acuerdos de cada reunión de liderazgo: quién asistió, qué se decidió y quién le da seguimiento.';
+    body.appendChild(intro);
+
+    const box = document.createElement('div');
+    box.className = 'compose-box';
+    box.innerHTML = `
+      <span class="eyebrow">Escribir</span>
+      <h3>Nueva acta</h3>
+      <input data-key="titulo" type="text" placeholder="Título de la reunión (ej. Reunión de liderazgo - agosto)">
+      <input data-key="fecha" type="text" placeholder="Fecha (ej. 12 ago 2026)">
+      <input data-key="asistentes" type="text" placeholder="Asistentes (ej. Pst. Nancy, Pst. Galo, líderes de ministerio)">
+      <textarea data-key="decision" placeholder="Acuerdos y decisiones tomadas..."></textarea>
+      <input data-key="responsable" type="text" placeholder="Responsable de dar seguimiento">
+      <button class="compose-submit" type="button">Guardar acta</button>
+    `;
+    attachRipple(box.querySelector('.compose-submit'));
+    box.querySelector('.compose-submit').addEventListener('click', ()=>{
+      const titulo = box.querySelector('[data-key="titulo"]').value.trim();
+      const decision = box.querySelector('[data-key="decision"]').value.trim();
+      if(!titulo || !decision){ showToast('Completa al menos el título y los acuerdos'); return; }
+      state.data.actas.unshift({
+        id:nextId(), titulo, decision,
+        fecha: box.querySelector('[data-key="fecha"]').value.trim() || 'Hoy',
+        asistentes: box.querySelector('[data-key="asistentes"]').value.trim(),
+        responsable: box.querySelector('[data-key="responsable"]').value.trim(),
+        autor: currentUser.name
+      });
+      renderSection('oficina');
+      showToast('Acta guardada');
+    });
+    body.appendChild(box);
+
+    if(!state.data.actas.length){
+      const d = document.createElement('div');
+      d.className = 'empty-state';
+      d.innerHTML = `<h3>Todavía no hay actas registradas.</h3>`;
+      body.appendChild(d);
+      return;
+    }
+    state.data.actas.forEach(item=>{
+      const row = document.createElement('div');
+      row.className = 'list-row';
+      row.innerHTML = `
+        <div class="lr-main">
+          <h4>${escapeHtml(item.titulo)}</h4>
+          ${item.asistentes ? `<div class="meta" style="margin-top:2px;">Asistentes: ${escapeHtml(item.asistentes)}</div>` : ''}
+          <p>${escapeHtml(item.decision)}</p>
+          ${item.responsable ? `<div class="meta" style="margin-top:4px;">Responsable de seguimiento: ${escapeHtml(item.responsable)}</div>` : ''}
+          <div class="meta" style="margin-top:2px;">${escapeHtml(item.fecha||'')}${item.autor ? ' · Publicado por '+escapeHtml(item.autor) : ''}</div>
+        </div>
+      `;
+      const actions = document.createElement('div');
+      actions.className = 'lr-actions';
+      actions.appendChild(iconBtn('delete', ()=> removeItem('actas', item.id), true));
+      row.appendChild(actions);
+      body.appendChild(row);
+    });
+  }
+
+  const REGISTRO_TIPOS = ['Bautismo','Membresía nueva','Matrimonio','Dedicación de niños','Transferencia de membresía'];
+
+  function renderRegistroEclesiastico(body, isPastor, isSecretaria){
+    const intro = document.createElement('p');
+    intro.style.cssText = 'font-size:12.5px; color:var(--ink-50); margin:-4px 0 16px;';
+    intro.textContent = 'Registro formal de bautismos, membresías, matrimonios y otros actos eclesiásticos de la congregación.';
+    body.appendChild(intro);
+
+    const box = document.createElement('div');
+    box.className = 'compose-box';
+    box.innerHTML = `
+      <span class="eyebrow">Escribir</span>
+      <h3>Nuevo registro</h3>
+      <select data-key="tipo">${REGISTRO_TIPOS.map(t=>`<option value="${t}">${t}</option>`).join('')}</select>
+      <input data-key="persona" type="text" placeholder="Nombre de la persona o pareja">
+      <input data-key="fecha" type="text" placeholder="Fecha (ej. 12 ago 2026)">
+      <input data-key="oficiante" type="text" placeholder="Quién ofició / registró">
+      <textarea data-key="observaciones" placeholder="Observaciones (opcional)"></textarea>
+      <button class="compose-submit" type="button">Guardar registro</button>
+    `;
+    attachRipple(box.querySelector('.compose-submit'));
+    box.querySelector('.compose-submit').addEventListener('click', ()=>{
+      const persona = box.querySelector('[data-key="persona"]').value.trim();
+      if(!persona){ showToast('Escribe el nombre de la persona o pareja'); return; }
+      state.data.registroEclesiastico.unshift({
+        id:nextId(),
+        tipo: box.querySelector('[data-key="tipo"]').value,
+        persona,
+        fecha: box.querySelector('[data-key="fecha"]').value.trim() || 'Hoy',
+        oficiante: box.querySelector('[data-key="oficiante"]').value.trim(),
+        observaciones: box.querySelector('[data-key="observaciones"]').value.trim(),
+        autor: currentUser.name
+      });
+      renderSection('oficina');
+      showToast('Registro guardado');
+    });
+    body.appendChild(box);
+
+    if(!state.data.registroEclesiastico.length){
+      const d = document.createElement('div');
+      d.className = 'empty-state';
+      d.innerHTML = `<h3>Todavía no hay registros eclesiásticos.</h3>`;
+      body.appendChild(d);
+      return;
+    }
+    state.data.registroEclesiastico.forEach(item=>{
+      const row = document.createElement('div');
+      row.className = 'list-row';
+      row.innerHTML = `
+        <div class="lr-main">
+          <h4>${escapeHtml(item.persona)} <span class="pill">${escapeHtml(item.tipo)}</span></h4>
+          ${item.oficiante ? `<div class="meta" style="margin-top:2px;">Ofició: ${escapeHtml(item.oficiante)}</div>` : ''}
+          ${item.observaciones ? `<p>${escapeHtml(item.observaciones)}</p>` : ''}
+          <div class="meta" style="margin-top:4px;">${escapeHtml(item.fecha||'')}</div>
+        </div>
+      `;
+      const actions = document.createElement('div');
+      actions.className = 'lr-actions';
+      actions.appendChild(iconBtn('delete', ()=> removeItem('registroEclesiastico', item.id), true));
+      row.appendChild(actions);
+      body.appendChild(row);
+    });
+  }
+
+  function renderSeguimientoLideres(body, isPastor, isSecretaria){
+    const intro = document.createElement('p');
+    intro.style.cssText = 'font-size:12.5px; color:var(--ink-50); margin:-4px 0 16px;';
+    intro.textContent = 'Sirve para dar acompañamiento a cada líder de ministerio: cómo va su ministerio, qué necesita, y cuándo darle seguimiento otra vez.';
+    body.appendChild(intro);
+
+    const lideres = state.data.miembros.filter(isMemberLeader);
+    const liderOptsHtml = lideres.length
+      ? lideres.map(l=>`<option value="${escapeHtml(l.nombre)}">${escapeHtml(l.nombre)} — ${escapeHtml(l.rol||'')}</option>`).join('')
+      : `<option value="">No hay líderes registrados todavía</option>`;
+
+    const box = document.createElement('div');
+    box.className = 'compose-box';
+    box.innerHTML = `
+      <span class="eyebrow">Escribir</span>
+      <h3>Nuevo seguimiento</h3>
+      <select data-key="lider">${liderOptsHtml}</select>
+      <input data-key="fecha" type="text" placeholder="Fecha (ej. 12 ago 2026)">
+      <input data-key="tema" type="text" placeholder="Tema tratado (ej. asistencia, crecimiento del ministerio)">
+      <textarea data-key="notas" placeholder="Observaciones y plan de acción..."></textarea>
+      <input data-key="proxima" type="text" placeholder="Próximo seguimiento (opcional)">
+      <button class="compose-submit" type="button">Guardar seguimiento</button>
+    `;
+    attachRipple(box.querySelector('.compose-submit'));
+    box.querySelector('.compose-submit').addEventListener('click', ()=>{
+      const lider = box.querySelector('[data-key="lider"]').value;
+      const notas = box.querySelector('[data-key="notas"]').value.trim();
+      if(!lider || !notas){ showToast('Selecciona un líder y escribe tus observaciones'); return; }
+      state.data.seguimientoLideres.unshift({
+        id:nextId(), lider, notas,
+        fecha: box.querySelector('[data-key="fecha"]').value.trim() || 'Hoy',
+        tema: box.querySelector('[data-key="tema"]').value.trim(),
+        proxima: box.querySelector('[data-key="proxima"]').value.trim(),
+        autor: currentUser.name
+      });
+      renderSection('oficina');
+      showToast('Seguimiento guardado');
+    });
+    body.appendChild(box);
+
+    if(!state.data.seguimientoLideres.length){
+      const d = document.createElement('div');
+      d.className = 'empty-state';
+      d.innerHTML = `<h3>Todavía no hay seguimientos registrados.</h3>`;
+      body.appendChild(d);
+      return;
+    }
+    state.data.seguimientoLideres.forEach(item=>{
+      const row = document.createElement('div');
+      row.className = 'list-row';
+      row.innerHTML = `
+        <div class="lr-main">
+          <h4>${escapeHtml(item.lider)}</h4>
+          ${item.tema ? `<div class="meta" style="margin-top:2px;">Tema: ${escapeHtml(item.tema)}</div>` : ''}
+          <p>${escapeHtml(item.notas)}</p>
+          ${item.proxima ? `<div class="meta" style="margin-top:4px;">Próximo seguimiento: ${escapeHtml(item.proxima)}</div>` : ''}
+          <div class="meta" style="margin-top:2px;">${escapeHtml(item.fecha||'')}</div>
+        </div>
+      `;
+      const actions = document.createElement('div');
+      actions.className = 'lr-actions';
+      actions.appendChild(iconBtn('delete', ()=> removeItem('seguimientoLideres', item.id), true));
+      row.appendChild(actions);
+      body.appendChild(row);
+    });
+  }
+
+  function renderConsejeria(body, isPastor, isSecretaria){
+    if(isSecretaria){
+      const note = document.createElement('div');
+      note.className = 'confidential-note';
+      note.textContent = 'Esta información es confidencial. Como Secretaría puedes ver que un caso existe, pero el contenido solo lo puede abrir el pastor.';
+      body.appendChild(note);
+      if(!state.data.consejeria.length){
+        const d = document.createElement('div');
+        d.className = 'empty-state';
+        d.innerHTML = `<h3>No hay casos registrados.</h3>`;
+        body.appendChild(d);
+        return;
+      }
+      state.data.consejeria.forEach(item=>{
+        const row = document.createElement('div');
+        row.className = 'list-row';
+        row.innerHTML = `
+          <div class="lr-main">
+            <h4>${escapeHtml(item.titulo)} <span class="pill">🔒 Caso confidencial</span></h4>
+            <div class="meta" style="margin-top:4px;">${escapeHtml(item.fecha||'')}</div>
+          </div>
+        `;
+        body.appendChild(row);
+      });
+      return;
+    }
+
+    // Pastor: acceso completo
+    const box = document.createElement('div');
+    box.className = 'compose-box';
+    box.innerHTML = `
+      <span class="eyebrow">Escribir</span>
+      <h3>Nuevo caso de consejería</h3>
+      <div style="font-size:12.5px; color:var(--aqua-soft); margin:-8px 0 14px;">Solo tú puedes ver el detalle de estos casos.</div>
+      <input data-key="titulo" type="text" placeholder="Título breve (ej. Acompañamiento familiar)">
+      <textarea data-key="texto" placeholder="Detalle del caso..."></textarea>
+      <button class="compose-submit" type="button">Guardar caso</button>
+    `;
+    attachRipple(box.querySelector('.compose-submit'));
+    box.querySelector('.compose-submit').addEventListener('click', ()=>{
+      const titulo = box.querySelector('[data-key="titulo"]').value.trim();
+      const texto = box.querySelector('[data-key="texto"]').value.trim();
+      if(!titulo || !texto){ showToast('Completa el título y el detalle'); return; }
+      state.data.consejeria.unshift({ id:nextId(), titulo, texto, fecha:'Hoy', autor:currentUser.name });
+      renderSection('oficina');
+      showToast('Caso registrado');
+    });
+    body.appendChild(box);
+
+    if(!state.data.consejeria.length){
+      const d = document.createElement('div');
+      d.className = 'empty-state';
+      d.innerHTML = `<h3>No hay casos registrados.</h3>`;
+      body.appendChild(d);
+      return;
+    }
+    state.data.consejeria.forEach(item=>{
+      body.appendChild(oficinaListRow(item, null, ()=> removeItem('consejeria', item.id)));
+    });
+  }
+
+  const DIEZMO_CATEGORIAS = ['Diezmo','Ofrenda general','Ofrenda misionera','Otro'];
+  const GASTO_TIPOS = ['Gasto','Compra','Préstamo a ministerio'];
+
+  function todayISO(){
+    const d = new Date();
+    const tz = d.getTimezoneOffset()*60000;
+    return new Date(d - tz).toISOString().slice(0,10);
+  }
+  function formatFechaDisplay(fecha){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(fecha||'')) return fecha || '';
+    const d = new Date(fecha+'T00:00:00');
+    if(isNaN(d)) return fecha;
+    return d.toLocaleDateString('es-EC', {day:'numeric', month:'short', year:'numeric'});
+  }
+  function fechaOrdenKey(fecha){
+    return /^\d{4}-\d{2}-\d{2}$/.test(fecha||'') ? fecha : '0000-00-00';
+  }
+  function fechaLabelSemana(fecha){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(fecha||'')) return 'Sin fecha';
+    const d = new Date(fecha+'T00:00:00');
+    const dow = (d.getDay()+6)%7;
+    const monday = new Date(d); monday.setDate(d.getDate()-dow);
+    const sunday = new Date(monday); sunday.setDate(monday.getDate()+6);
+    const fmt = x=> x.toLocaleDateString('es-EC', {day:'numeric', month:'short'});
+    return `Semana del ${fmt(monday)} al ${fmt(sunday)}`;
+  }
+  function fechaLabelMes(fecha){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(fecha||'')) return 'Sin fecha';
+    const d = new Date(fecha+'T00:00:00');
+    const label = d.toLocaleDateString('es-EC', {month:'long', year:'numeric'});
+    return label.charAt(0).toUpperCase()+label.slice(1);
+  }
+  function parseNombreParaOrden(nombreCompleto){
+    const limpio = (nombreCompleto||'').replace(/^(Hna\.|Hno\.|Pst\.|Pastora|Pastor|Sra\.|Srta\.|Sr\.)\s+/i,'').trim();
+    const palabras = limpio.split(/\s+/).filter(Boolean);
+    let apellidos, nombres;
+    if(palabras.length >= 4){ apellidos = palabras.slice(-2).join(' '); nombres = palabras.slice(0,-2).join(' '); }
+    else if(palabras.length === 3){ apellidos = palabras.slice(-1).join(' '); nombres = palabras.slice(0,-1).join(' '); }
+    else if(palabras.length === 2){ apellidos = palabras[1]; nombres = palabras[0]; }
+    else { apellidos = nombres = palabras[0] || ''; }
+    return { apellidos, nombres, sortKey: (apellidos+' '+nombres).toLowerCase() };
+  }
+  function segToggle(stateKey, options, onChange){
+    const wrap = document.createElement('div');
+    wrap.className = 'seg-filter';
+    wrap.style.marginBottom = '16px';
+    const activeIdx = Math.max(0, options.findIndex(o=>o.key===state[stateKey]));
+    wrap.innerHTML = `
+      <div class="seg-filter-thumb" style="--seg-idx:${activeIdx}; --seg-count:${options.length};"></div>
+      ${options.map(o=>`<button type="button" class="seg-filter-btn ${o.key===state[stateKey]?'active':''}" data-key="${o.key}">${o.label}</button>`).join('')}
+    `;
+    wrap.querySelectorAll('.seg-filter-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        if(state[stateKey] === btn.dataset.key) return;
+        state[stateKey] = btn.dataset.key;
+        onChange();
+      });
+    });
+    return wrap;
+  }
+
+  function descargarTablaDiezmosAnual(){
+    const porPersona = {};
+    state.data.diezmos.filter(d=> d.categoria==='Diezmo' && d.donante && d.donante!=='Anónimo/Visitante').forEach(d=>{
+      porPersona[d.donante] = (porPersona[d.donante]||0) + Number(d.monto||0);
+    });
+    const filas = Object.keys(porPersona).map(nombre=>{
+      const info = parseNombreParaOrden(nombre);
+      return { nombre, total: porPersona[nombre], sortKey: info.sortKey };
+    }).sort((a,b)=> a.sortKey.localeCompare(b.sortKey, 'es'));
+
+    if(!filas.length){ showToast('Todavía no hay diezmos registrados para descargar'); return; }
+
+    let csv = 'Apellidos y Nombres,Total anual Enero-Diciembre (USD)\n';
+    filas.forEach(f=>{ csv += `"${f.nombre.replace(/"/g,'""')}",${f.total.toFixed(2)}\n`; });
+    const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'diezmos_congregacion_anual.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Descarga lista');
+  }
+
+  function renderDiezmos(body, isPastor, isSecretaria){
+    const totalIngresos = state.data.diezmos.reduce((s,d)=> s + Number(d.monto||0), 0);
+    const totalGastos = state.data.gastos.reduce((s,g)=> s + Number(g.monto||0), 0);
+    const summary = document.createElement('div');
+    summary.className = 'diezmo-summary';
+    summary.innerHTML = `
+      <div class="stat-card ingreso"><div class="num">$${totalIngresos.toFixed(2)}</div><div class="lbl">💵 Total ingresos</div></div>
+      <div class="stat-card gasto"><div class="num">$${totalGastos.toFixed(2)}</div><div class="lbl">🧾 Total gastos y compras</div></div>
+      <div class="stat-card balance"><div class="num">$${(totalIngresos-totalGastos).toFixed(2)}</div><div class="lbl">⚖️ Balance</div></div>
+    `;
+    body.appendChild(summary);
+
+    if(!state.diezmoView) state.diezmoView = 'ingresos';
+    body.appendChild(segToggle('diezmoView', [
+      {key:'ingresos', label:'💵 Ingresos'},
+      {key:'gastos', label:'🧾 Gastos y compras'}
+    ], ()=> renderSection('oficina')));
+
+    if(state.diezmoView === 'gastos'){
+      renderGastosSection(body);
+    } else {
+      renderIngresosSection(body);
+    }
+  }
+
+  function renderIngresosSection(body){
+    const ministerioOpts = ['<option value="">General / Congregación</option>']
+      .concat(state.data.ministerios.map(m=>`<option value="${escapeHtml(m.nombre)}">${escapeHtml(m.nombre)}</option>`)).join('');
+
+    const box = document.createElement('div');
+    box.className = 'compose-box';
+    box.innerHTML = `
+      <span class="eyebrow">Registrar</span>
+      <h3>Nuevo aporte</h3>
+      <input data-key="monto" type="number" min="0" step="0.01" placeholder="Monto (ej. 50.00)">
+      <select data-key="categoria">${DIEZMO_CATEGORIAS.map(c=>`<option value="${c}">${c}</option>`).join('')}</select>
+      <select data-key="ministerio">${ministerioOpts}</select>
+      <input data-key="fecha" type="date" value="${todayISO()}">
+      <div data-key="donante-wrap">
+        <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--aqua-soft); margin:2px 0 6px;">¿Quién aportó?</label>
+        <input data-key="donante" type="text" placeholder="Nombre de quien aportó (deja vacío si es anónimo)">
+      </div>
+      <button class="compose-submit" type="button">Guardar aporte</button>
+    `;
+    attachRipple(box.querySelector('.compose-submit'));
+    const categoriaSel = box.querySelector('[data-key="categoria"]');
+    const donanteWrap = box.querySelector('[data-key="donante-wrap"]');
+    const syncDonanteVisibility = ()=>{
+      donanteWrap.classList.toggle('hidden', categoriaSel.value.startsWith('Ofrenda'));
+    };
+    categoriaSel.addEventListener('change', syncDonanteVisibility);
+    syncDonanteVisibility();
+
+    box.querySelector('.compose-submit').addEventListener('click', ()=>{
+      const monto = parseFloat(box.querySelector('[data-key="monto"]').value);
+      if(!monto || monto <= 0){ showToast('Ingresa un monto válido'); return; }
+      const categoria = categoriaSel.value;
+      const ministerio = box.querySelector('[data-key="ministerio"]').value;
+      const fecha = box.querySelector('[data-key="fecha"]').value || todayISO();
+      const esOfrenda = categoria.startsWith('Ofrenda');
+      let donante;
+      if(esOfrenda){
+        donante = categoria + ' de la congregación';
+      } else {
+        donante = box.querySelector('[data-key="donante"]').value.trim() || 'Anónimo/Visitante';
+      }
+      state.data.diezmos.unshift({ id:nextId(), monto, categoria, ministerio, donante, fecha, registradoPor:currentUser.name });
+      renderSection('oficina');
+      showToast('Aporte registrado');
+    });
+    body.appendChild(box);
+
+    // Reporte semanal / mensual
+    const periodBox = document.createElement('div');
+    periodBox.className = 'home-panel';
+    periodBox.style.marginBottom = '18px';
+    periodBox.innerHTML = `<div class="home-panel-head"><h3>Reporte de ingresos por periodo</h3></div>`;
+    body.appendChild(periodBox);
+
+    if(!state.diezmoPeriodo) state.diezmoPeriodo = 'semana';
+    periodBox.appendChild(segToggle('diezmoPeriodo', [
+      {key:'semana', label:'Por semana'},
+      {key:'mes', label:'Por mes'}
+    ], ()=> renderSection('oficina')));
+
+    const grupos = {};
+    state.data.diezmos.forEach(d=>{
+      const key = state.diezmoPeriodo === 'semana' ? fechaLabelSemana(d.fecha) : fechaLabelMes(d.fecha);
+      if(!grupos[key]) grupos[key] = { total:0, count:0, orden: fechaOrdenKey(d.fecha) };
+      grupos[key].total += Number(d.monto||0);
+      grupos[key].count += 1;
+      if(fechaOrdenKey(d.fecha) > grupos[key].orden) grupos[key].orden = fechaOrdenKey(d.fecha);
+    });
+    const claves = Object.keys(grupos).sort((a,b)=> grupos[b].orden.localeCompare(grupos[a].orden));
+    if(!claves.length){
+      const empty = document.createElement('div');
+      empty.className = 'home-panel-empty';
+      empty.textContent = 'Todavía no hay ingresos registrados.';
+      periodBox.appendChild(empty);
+    } else {
+      claves.forEach(key=>{
+        const row = document.createElement('div');
+        row.className = 'list-row';
+        row.innerHTML = `<div class="lr-main"><h4>${escapeHtml(key)}</h4><p>${grupos[key].count} registro(s)</p></div><div style="font-weight:700; color:var(--ink); font-family:'Fraunces',serif;">$${grupos[key].total.toFixed(2)}</div>`;
+        periodBox.appendChild(row);
+      });
+    }
+
+    // Reporte por persona
+    const reportBox = document.createElement('div');
+    reportBox.className = 'home-panel';
+    reportBox.style.marginBottom = '18px';
+    const donantesUnicos = [...new Set(state.data.diezmos.map(d=> d.donante))].filter(n=> n && !n.startsWith('Ofrenda') && n !== 'Anónimo/Visitante');
+    reportBox.innerHTML = `
+      <div class="home-panel-head"><h3>Reporte de aportes por persona</h3></div>
+      <div style="padding:0 2px 14px;">
+        <select id="diezmo-report-select" style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(10,37,48,.15); font-family:inherit; font-size:13.5px;">
+          <option value="">Selecciona una persona…</option>
+          ${donantesUnicos.map(n=>`<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('')}
+        </select>
+        <div id="diezmo-report-result" style="margin-top:12px;"></div>
+      </div>
+    `;
+    body.appendChild(reportBox);
+    reportBox.querySelector('#diezmo-report-select').addEventListener('change', (e)=>{
+      const nombre = e.target.value;
+      const resultEl = reportBox.querySelector('#diezmo-report-result');
+      if(!nombre){ resultEl.innerHTML = ''; return; }
+      const propios = state.data.diezmos.filter(d=> d.donante === nombre);
+      const totalPropio = propios.reduce((s,d)=> s + Number(d.monto||0), 0);
+      resultEl.innerHTML = `
+        <div class="meta" style="margin-bottom:8px;">Total aportado por ${escapeHtml(nombre)}: <strong style="color:var(--ink);">$${totalPropio.toFixed(2)}</strong> en ${propios.length} registro(s).</div>
+      `;
+      propios.forEach(d=>{
+        const row = document.createElement('div');
+        row.className = 'list-row';
+        row.innerHTML = `<div class="lr-main"><h4>$${Number(d.monto).toFixed(2)} · ${escapeHtml(d.categoria)}</h4><div class="meta" style="margin-top:2px;">${escapeHtml(d.ministerio||'General / Congregación')} · ${escapeHtml(formatFechaDisplay(d.fecha))}</div></div>`;
+        resultEl.appendChild(row);
+      });
+    });
+
+    // Descarga anual A-Z (solo diezmos personales)
+    const downloadBox = document.createElement('div');
+    downloadBox.className = 'home-panel';
+    downloadBox.style.marginBottom = '18px';
+    downloadBox.innerHTML = `
+      <div class="home-panel-head"><h3>Tabla anual de diezmos — toda la congregación</h3></div>
+      <p style="font-size:12.5px; color:var(--ink-50); margin:0 0 12px;">Descarga un CSV con el total de diezmos de cada persona, sumado de enero a diciembre, ordenado alfabéticamente por apellidos y nombres (A–Z).</p>
+    `;
+    const downloadBtn = document.createElement('button');
+    downloadBtn.className = 'btn-primary';
+    downloadBtn.style.maxWidth = '280px';
+    downloadBtn.textContent = '⬇ Descargar tabla anual (A–Z)';
+    downloadBtn.addEventListener('click', descargarTablaDiezmosAnual);
+    downloadBox.appendChild(downloadBtn);
+    body.appendChild(downloadBox);
+
+    // Listado general
+    if(!state.data.diezmos.length){
+      const d = document.createElement('div');
+      d.className = 'empty-state';
+      d.innerHTML = `<h3>Todavía no hay aportes registrados.</h3>`;
+      body.appendChild(d);
+      return;
+    }
+    state.data.diezmos.forEach(item=>{
+      const row = document.createElement('div');
+      row.className = 'list-row';
+      const badgeClass = item.categoria === 'Diezmo' ? 'diezmo' : (item.categoria.startsWith('Ofrenda') ? 'ofrenda' : '');
+      row.innerHTML = `
+        <div class="lr-main">
+          <h4>$${Number(item.monto).toFixed(2)} <span class="cat-badge ${badgeClass}">${escapeHtml(item.categoria)}</span> <span class="pill">${escapeHtml(item.ministerio || 'General / Congregación')}</span></h4>
+          <div class="meta" style="margin-top:2px;">${escapeHtml(item.donante)} · ${escapeHtml(formatFechaDisplay(item.fecha))}</div>
+        </div>
+      `;
+      const actions = document.createElement('div');
+      actions.className = 'lr-actions';
+      actions.appendChild(iconBtn('delete', ()=> removeItem('diezmos', item.id), true));
+      row.appendChild(actions);
+      body.appendChild(row);
+    });
+  }
+
+  function renderGastosSection(body){
+    const ministerioOpts = ['<option value="">No aplica</option>']
+      .concat(state.data.ministerios.map(m=>`<option value="${escapeHtml(m.nombre)}">${escapeHtml(m.nombre)}</option>`)).join('');
+
+    const box = document.createElement('div');
+    box.className = 'compose-box';
+    box.innerHTML = `
+      <span class="eyebrow">Registrar</span>
+      <h3>Nuevo gasto, compra o préstamo</h3>
+      <select data-key="tipo">${GASTO_TIPOS.map(t=>`<option value="${t}">${t}</option>`).join('')}</select>
+      <input data-key="monto" type="number" min="0" step="0.01" placeholder="Monto (ej. 50.00)">
+      <textarea data-key="descripcion" placeholder="¿De qué fue? (ej. compra de sillas, pago de luz, préstamo para evento de jóvenes)"></textarea>
+      <div data-key="ministerio-wrap" class="hidden">
+        <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--aqua-soft); margin:2px 0 6px;">Ministerio al que se le prestó</label>
+        <select data-key="ministerio">${ministerioOpts}</select>
+      </div>
+      <input data-key="fecha" type="date" value="${todayISO()}">
+      <button class="compose-submit" type="button">Guardar</button>
+    `;
+    attachRipple(box.querySelector('.compose-submit'));
+    const tipoSel = box.querySelector('[data-key="tipo"]');
+    const ministerioWrap = box.querySelector('[data-key="ministerio-wrap"]');
+    const syncMinisterioVisibility = ()=> ministerioWrap.classList.toggle('hidden', tipoSel.value !== 'Préstamo a ministerio');
+    tipoSel.addEventListener('change', syncMinisterioVisibility);
+    syncMinisterioVisibility();
+
+    box.querySelector('.compose-submit').addEventListener('click', ()=>{
+      const monto = parseFloat(box.querySelector('[data-key="monto"]').value);
+      const descripcion = box.querySelector('[data-key="descripcion"]').value.trim();
+      if(!monto || monto <= 0 || !descripcion){ showToast('Ingresa un monto válido y describe de qué fue'); return; }
+      const tipo = tipoSel.value;
+      const ministerio = tipo === 'Préstamo a ministerio' ? box.querySelector('[data-key="ministerio"]').value : '';
+      const fecha = box.querySelector('[data-key="fecha"]').value || todayISO();
+      state.data.gastos.unshift({ id:nextId(), tipo, monto, descripcion, ministerio, fecha, devuelto:false, registradoPor:currentUser.name });
+      renderSection('oficina');
+      showToast('Registrado');
+    });
+    body.appendChild(box);
+
+    if(!state.data.gastos.length){
+      const d = document.createElement('div');
+      d.className = 'empty-state';
+      d.innerHTML = `<h3>Todavía no hay gastos, compras o préstamos registrados.</h3>`;
+      body.appendChild(d);
+      return;
+    }
+    state.data.gastos.forEach(item=>{
+      const esPrestamo = item.tipo === 'Préstamo a ministerio';
+      const row = document.createElement('div');
+      row.className = 'list-row' + (esPrestamo ? (item.devuelto ? ' prestamo-devuelto' : ' prestamo-pendiente') : '');
+      const badgeClass = item.tipo === 'Gasto' ? 'gasto' : (item.tipo === 'Compra' ? 'compra' : 'prestamo');
+      row.innerHTML = `
+        <div class="lr-main">
+          <h4>$${Number(item.monto).toFixed(2)} <span class="cat-badge ${badgeClass}">${escapeHtml(item.tipo)}</span>${esPrestamo ? ` <span class="pill">${item.devuelto ? '✅ Devuelto' : '⏳ Pendiente'}</span>` : ''}</h4>
+          <p>${escapeHtml(item.descripcion)}</p>
+          ${item.ministerio ? `<div class="meta" style="margin-top:2px;">Ministerio: ${escapeHtml(item.ministerio)}</div>` : ''}
+          <div class="meta" style="margin-top:2px;">${escapeHtml(formatFechaDisplay(item.fecha))}</div>
+        </div>
+      `;
+      const actions = document.createElement('div');
+      actions.className = 'lr-actions';
+      if(esPrestamo){
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'icon-btn';
+        toggleBtn.title = item.devuelto ? 'Marcar como pendiente' : 'Marcar como devuelto';
+        toggleBtn.textContent = item.devuelto ? '↺' : '✓';
+        toggleBtn.addEventListener('click', ()=>{ item.devuelto = !item.devuelto; renderSection('oficina'); });
+        actions.appendChild(toggleBtn);
+      }
+      actions.appendChild(iconBtn('delete', ()=> removeItem('gastos', item.id), true));
+      row.appendChild(actions);
+      body.appendChild(row);
+    });
+  }
+
+  function renderPerfil(area){
+    const member = state.data.miembros.find(m=>m.id===currentUser.memberId);
+    if(!member){
+      area.innerHTML = '<p style="color:var(--ink-50); font-size:13px;">No encontramos tu registro. Contacta a un pastor.</p>';
+      return;
+    }
+    const box = document.createElement('div');
+    box.className = 'compose-box';
+    box.style.maxWidth = '900px';
+    box.innerHTML = `
+      <span class="eyebrow">Cuenta</span>
+      <h3>Mi perfil</h3>
+      <div style="font-size:12.5px; color:var(--aqua-soft); margin:-8px 0 14px;">Actualiza tus datos. Deja la contraseña vacía si no quieres cambiarla.</div>
+      <input data-key="nombre" placeholder="Nombre completo" value="${escapeHtml(member.nombre)}">
+      <input data-key="contacto" placeholder="Teléfono" value="${escapeHtml(member.contacto||'')}">
+      <input data-key="correo" type="email" placeholder="Correo" value="${escapeHtml(member.correo||'')}">
+      <div class="pass-wrap">
+        <input data-key="password" id="perfil-pass" type="password" placeholder="Nueva contraseña (opcional)">
+        <button type="button" class="pass-toggle" data-target="perfil-pass" aria-label="Mostrar contraseña">${ICON_EYE}</button>
+      </div>
+      <ul class="pass-requirements" id="perfil-pass-reqs">
+        <li data-rule="length"><span class="mark"></span>Mínimo 8 caracteres</li>
+        <li data-rule="upper"><span class="mark"></span>Una letra mayúscula (A-Z)</li>
+        <li data-rule="lower"><span class="mark"></span>Una letra minúscula (a-z)</li>
+        <li data-rule="number"><span class="mark"></span>Un número (0-9)</li>
+        <li data-rule="special"><span class="mark"></span>Un carácter especial (!@#$%&*...)</li>
+      </ul>
+      <button class="compose-submit" type="button">Guardar cambios</button>
+    `;
+    attachRipple(box.querySelector('.compose-submit'));
+    bindPasswordChecklist('perfil-pass', 'perfil-pass-reqs');
+    box.querySelectorAll('.pass-toggle').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const input = document.getElementById(btn.dataset.target);
+        if(!input) return;
+        const showing = input.type === 'password';
+        input.type = showing ? 'text' : 'password';
+        btn.innerHTML = showing ? ICON_EYE_OFF : ICON_EYE;
+        btn.classList.toggle('showing', showing);
+        btn.setAttribute('aria-label', showing ? 'Ocultar contraseña' : 'Mostrar contraseña');
+      });
+    });
+    box.querySelector('.compose-submit').addEventListener('click', ()=>{
+      const nombre = box.querySelector('[data-key="nombre"]').value.trim();
+      const contacto = box.querySelector('[data-key="contacto"]').value.trim();
+      const correo = box.querySelector('[data-key="correo"]').value.trim();
+      const password = box.querySelector('[data-key="password"]').value;
+      if(!nombre || !correo){ showToast('Nombre y correo son obligatorios'); return; }
+      if(password && !passwordIsValid(password)){ showToast('La nueva contraseña no cumple con los requisitos de seguridad'); return; }
+      member.nombre = nombre;
+      member.contacto = contacto;
+      member.correo = correo;
+      if(password) member.password = password;
+      currentUser.name = nombre;
+      currentUser.email = correo;
+      setupUserChip();
+      showToast('Perfil actualizado');
+      renderSection('perfil');
+    });
+    area.appendChild(box);
+
+    const roleNote = document.createElement('div');
+    roleNote.style.cssText = 'margin-top:14px; font-size:12.5px; color:var(--ink-50);';
+    roleNote.textContent = 'Tu rol / ministerio: ' + (member.rol || 'Miembro') + '. Si necesitas cambiarlo, contacta a un pastor.';
+    area.appendChild(roleNote);
+
+    if(currentUser.role === 'miembro' || currentUser.role === 'lider'){
+      const misAportes = state.data.diezmos.filter(d=> d.donante === member.nombre);
+      const totalAportes = misAportes.reduce((s,d)=> s + Number(d.monto||0), 0);
+      const aportesBox = document.createElement('div');
+      aportesBox.className = 'home-panel';
+      aportesBox.style.marginTop = '18px';
+      aportesBox.innerHTML = `<div class="home-panel-head"><h3>Mis aportes</h3></div>`;
+      if(!misAportes.length){
+        const empty = document.createElement('div');
+        empty.className = 'home-panel-empty';
+        empty.textContent = 'Todavía no tienes aportes registrados por el pastor o la Secretaría.';
+        aportesBox.appendChild(empty);
+      } else {
+        const summary = document.createElement('div');
+        summary.style.cssText = 'padding:0 2px 10px; font-size:13px; color:var(--ink-70);';
+        summary.innerHTML = `Total aportado: <strong style="color:var(--ink);">$${totalAportes.toFixed(2)}</strong> en ${misAportes.length} registro(s).`;
+        aportesBox.appendChild(summary);
+        misAportes.forEach(d=>{
+          const row = document.createElement('div');
+          row.className = 'list-row';
+          row.innerHTML = `<div class="lr-main"><h4>$${Number(d.monto).toFixed(2)} · ${escapeHtml(d.categoria)}</h4><div class="meta" style="margin-top:2px;">${escapeHtml(d.ministerio||'General / Congregación')} · ${escapeHtml(formatFechaDisplay(d.fecha))}</div></div>`;
+          aportesBox.appendChild(row);
+        });
+      }
+      area.appendChild(aportesBox);
+    }
+
+    if(currentUser.role === 'lider'){
+      if(!member.celulaEvangelistica) member.celulaEvangelistica = [];
+      if(!member.celulaDiscipulado) member.celulaDiscipulado = [];
+
+      const celulaGrid = document.createElement('div');
+      celulaGrid.className = 'celula-grid';
+      celulaGrid.style.marginTop = '18px';
+
+      celulaGrid.appendChild(celulaReport({
+        title: 'Célula evangelística',
+        subtitle: 'Nuevos creyentes que recién se han unido a la iglesia a través de tu célula evangelística.',
+        rows: member.celulaEvangelistica,
+        fields: [
+          {key:'nombre', placeholder:'Nombre completo'},
+          {key:'telefono', placeholder:'Teléfono'},
+          {key:'fecha', placeholder:'Fecha de ingreso'},
+          {key:'observaciones', placeholder:'Observaciones', type:'textarea'}
+        ]
+      }));
+
+      celulaGrid.appendChild(celulaReport({
+        title: 'Célula de discipulado',
+        subtitle: 'Miembros con más tiempo en la iglesia que ya pasaron por la célula evangelística, la academia de líderes u otros procesos de formación.',
+        rows: member.celulaDiscipulado,
+        fields: [
+          {key:'nombre', placeholder:'Nombre completo'},
+          {key:'observaciones', placeholder:'Observaciones', type:'textarea'}
+        ]
+      }));
+
+      area.appendChild(celulaGrid);
+    }
+  }
+
+  function celulaReport(cfg){
+    const wrap = document.createElement('div');
+    wrap.className = 'home-panel';
+    wrap.style.width = '100%';
+
+    const head = document.createElement('div');
+    head.innerHTML = `<h3 style="margin:0 0 2px;">${escapeHtml(cfg.title)}</h3><p style="margin:0 0 14px; font-size:12.5px; color:var(--ink-50);">${escapeHtml(cfg.subtitle)}</p>`;
+    wrap.appendChild(head);
+
+    const list = document.createElement('div');
+    renderCelulaRows();
+    wrap.appendChild(list);
+
+    const formBox = document.createElement('div');
+    formBox.style.cssText = 'margin-top:12px; padding-top:12px; border-top:1px solid rgba(10,37,48,.08);';
+    const inputsHtml = cfg.fields.map(f=>{
+      return f.type==='textarea'
+        ? `<textarea data-cf="${f.key}" placeholder="${f.placeholder}" style="width:100%; border-radius:10px; border:1px solid rgba(10,37,48,.15); padding:9px 11px; font-family:inherit; font-size:13px; margin-bottom:8px; resize:vertical; min-height:50px;"></textarea>`
+        : `<input data-cf="${f.key}" placeholder="${f.placeholder}" style="width:100%; border-radius:10px; border:1px solid rgba(10,37,48,.15); padding:9px 11px; font-family:inherit; font-size:13px; margin-bottom:8px;">`;
+    }).join('');
+    formBox.innerHTML = inputsHtml + `<button type="button" class="add-btn" style="margin:0;">+ Agregar</button>`;
+    const saveBtn = formBox.querySelector('.add-btn');
+    let editingId = null;
+    saveBtn.addEventListener('click', ()=>{
+      const vals = {};
+      let valid = true;
+      cfg.fields.forEach(f=>{
+        const el = formBox.querySelector(`[data-cf="${f.key}"]`);
+        vals[f.key] = el.value.trim();
+        if(f.key==='nombre' && !vals[f.key]) valid = false;
+      });
+      if(!valid){ showToast('El nombre es obligatorio'); return; }
+      if(editingId){
+        const row = cfg.rows.find(r=>r.id===editingId);
+        Object.assign(row, vals);
+        editingId = null;
+        saveBtn.textContent = '+ Agregar';
+      } else {
+        cfg.rows.push(Object.assign({ id:nextId() }, vals));
+      }
+      cfg.fields.forEach(f=> formBox.querySelector(`[data-cf="${f.key}"]`).value = '');
+      renderCelulaRows();
+      showToast('Guardado');
+    });
+    wrap.appendChild(formBox);
+
+    function renderCelulaRows(){
+      list.innerHTML = '';
+      if(!cfg.rows.length){
+        const empty = document.createElement('div');
+        empty.className = 'home-panel-empty';
+        empty.textContent = 'Todavía no has registrado a nadie aquí.';
+        list.appendChild(empty);
+        return;
+      }
+      cfg.rows.forEach(row=>{
+        const r = document.createElement('div');
+        r.className = 'list-row';
+        const subParts = cfg.fields.filter(f=>f.key!=='nombre').map(f=> row[f.key]).filter(Boolean);
+        r.innerHTML = `<div class="lr-main"><h4>${escapeHtml(row.nombre||'')}</h4><p>${escapeHtml(subParts.join(' · '))}</p></div>`;
+        const actions = document.createElement('div');
+        actions.className = 'lr-actions';
+        actions.appendChild(iconBtn('edit', ()=>{
+          editingId = row.id;
+          cfg.fields.forEach(f=> formBox.querySelector(`[data-cf="${f.key}"]`).value = row[f.key]||'');
+          saveBtn.textContent = 'Guardar cambios';
+        }));
+        actions.appendChild(iconBtn('delete', ()=>{
+          cfg.rows.splice(cfg.rows.findIndex(x=>x.id===row.id), 1);
+          renderCelulaRows();
+        }, true));
+        r.appendChild(actions);
+        list.appendChild(r);
+      });
+    }
+    return wrap;
+  }
+
+  function renderTestimonios(area){
+    const isPastor = currentUser.role === 'pastor';
+    area.appendChild(composeBox(
+      'Comparte lo que Dios ha hecho',
+      'Tu testimonio puede animar a alguien más en la congregación.',
+      [ {key:'texto', placeholder:'Cuenta tu testimonio...', type:'textarea'} ],
+      (vals)=>{
+        const authorMember = currentUser.memberId ? state.data.miembros.find(m=>m.id===currentUser.memberId) : null;
+        state.data.testimonios.unshift({ id:nextId(), nombre: currentUser.name, rol: authorMember ? (authorMember.rol||'') : '', ministerio: authorMember ? (authorMember.ministerio||'') : '', texto: vals.texto, fecha:'Hoy' });
+        renderSection('testimonios');
+        showToast('Testimonio publicado');
+      }
+    ));
+    const listWrap = document.createElement('div');
+    if(!state.data.testimonios.length){
+      listWrap.appendChild(emptyState('testimonios', isPastor));
+    } else {
+      state.data.testimonios.forEach(tItem=>{
+        const row = document.createElement('div');
+        row.className = 'list-row';
+        row.innerHTML = `
+          <div class="lr-main">
+            <h4>${escapeHtml(tItem.nombre)} ${tItem.ministerio ? `<span class="pill ministerio">${escapeHtml(tItem.ministerio)}</span>` : ''}</h4>
+            ${tItem.rol ? `<div class="meta" style="margin-top:1px;">${escapeHtml(tItem.rol)}</div>` : ''}
+            <p>${escapeHtml(tItem.texto)}</p>
+            <div class="meta" style="margin-top:4px;">${escapeHtml(tItem.fecha)}</div>
+          </div>
+        `;
+        if(isPastor){
+          const actions = document.createElement('div');
+          actions.className = 'lr-actions';
+          actions.appendChild(iconBtn('delete', ()=> removeItem('testimonios', tItem.id), true));
+          row.appendChild(actions);
+        }
+        listWrap.appendChild(row);
+      });
+    }
+    area.appendChild(listWrap);
+  }
+
+  function composeBox(title, sub, fields, onSubmit){
+    const box = document.createElement('div');
+    box.className = 'compose-box';
+    const inputsHtml = fields.map(f=>{
+      if(f.type==='textarea') return `<textarea data-key="${f.key}" placeholder="${f.placeholder||''}"></textarea>`;
+      if(f.type==='select') return `<select data-key="${f.key}">${(f.options||[]).map(o=>`<option value="${escapeHtml(o.value)}">${escapeHtml(o.label)}</option>`).join('')}</select>`;
+      return `<input data-key="${f.key}" placeholder="${f.placeholder||''}">`;
+    }).join('');
+    box.innerHTML = `
+      <span class="eyebrow">Escribir</span>
+      <h3>${escapeHtml(title)}</h3>
+      <div style="font-size:12.5px; color:var(--aqua-soft); margin:-8px 0 14px;">${escapeHtml(sub)}</div>
+      ${inputsHtml}
+      <button class="compose-submit" type="button">Enviar</button>
+    `;
+    attachRipple(box.querySelector('.compose-submit'));
+    box.querySelector('.compose-submit').addEventListener('click', ()=>{
+      const vals = {};
+      let valid = true;
+      fields.forEach(f=>{
+        const el = box.querySelector(`[data-key="${f.key}"]`);
+        vals[f.key] = el.value.trim();
+        if(!vals[f.key] && !f.optional) valid = false;
+      });
+      if(!valid){ showToast('Escribe algo antes de enviar'); return; }
+      onSubmit(vals);
+      fields.forEach(f=>{
+        const el = box.querySelector(`[data-key="${f.key}"]`);
+        if(f.type!=='select') el.value = '';
+      });
+    });
+    return box;
+  }
+
+  /* ===================== MODAL CRUD (pastor/admin) ===================== */
+  const overlay = document.getElementById('modal-overlay');
+  const modalFields = document.getElementById('modal-fields');
+  let modalContext = { section:null, editingId:null };
+
+  function openModal(section, item){
+    modalContext = { section, editingId: item ? item.id : null };
+    const label = sectionMeta[section] && sectionMeta[section].addLabel ? sectionMeta[section].addLabel : 'elemento';
+    document.getElementById('modal-title').textContent = item ? `Editar ${label}` : `Nuevo ${label}`;
+    modalFields.innerHTML = '';
+    formConfigs[section].forEach(f=>{
+      const wrap = document.createElement('div');
+      wrap.className = 'field';
+      const val = item ? (item[f.key]||'') : '';
+      const inputType = f.type==='textarea' ? null : (f.type==='email' ? 'email' : (f.type==='password' ? 'password' : 'text'));
+      if(f.type==='textarea'){
+        wrap.innerHTML = `<label>${f.label}</label><textarea data-key="${f.key}">${escapeHtml(val)}</textarea>`;
+      } else if(f.type==='select'){
+        const optsHtml = (f.options||[]).map(o=>{
+          const optVal = o===''? '' : o;
+          const optLabel = o===''? 'General / no aplica' : o;
+          return `<option value="${escapeHtml(optVal)}" ${val===optVal?'selected':''}>${escapeHtml(optLabel)}</option>`;
+        }).join('');
+        wrap.innerHTML = `<label>${f.label}</label><select data-key="${f.key}">${optsHtml}</select>`;
+      } else if(f.type==='password'){
+        const fieldId = `modal-pass-${f.key}`;
+        wrap.innerHTML = `<label>${f.label}</label><div class="pass-wrap"><input type="password" id="${fieldId}" data-key="${f.key}" value="${escapeHtml(val)}"><button type="button" class="pass-toggle" data-target="${fieldId}" aria-label="Mostrar contraseña">${ICON_EYE}</button></div>`;
+      } else {
+        wrap.innerHTML = `<label>${f.label}</label><input type="${inputType}" data-key="${f.key}" value="${escapeHtml(val)}">`;
+      }
+      modalFields.appendChild(wrap);
+    });
+    modalFields.querySelectorAll('.pass-toggle').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const input = document.getElementById(btn.dataset.target);
+        if(!input) return;
+        const showing = input.type === 'password';
+        input.type = showing ? 'text' : 'password';
+        btn.innerHTML = showing ? ICON_EYE_OFF : ICON_EYE;
+        btn.classList.toggle('showing', showing);
+        btn.setAttribute('aria-label', showing ? 'Ocultar contraseña' : 'Mostrar contraseña');
+      });
+    });
+    overlay.classList.remove('hidden');
+  }
+  document.getElementById('modal-cancel').addEventListener('click', ()=> overlay.classList.add('hidden'));
+  overlay.addEventListener('click', (e)=>{ if(e.target===overlay) overlay.classList.add('hidden'); });
+
+  document.getElementById('modal-save').addEventListener('click', ()=>{
+    const { section, editingId } = modalContext;
+    const vals = {};
+    formConfigs[section].forEach(f=>{
+      vals[f.key] = modalFields.querySelector(`[data-key="${f.key}"]`).value.trim();
+    });
+    if(vals.password && !passwordIsValid(vals.password)){
+      showToast('La contraseña temporal no cumple con los requisitos de seguridad (8+ caracteres, mayúscula, minúscula, número y símbolo)');
+      return;
+    }
+    if(editingId){
+      const item = state.data[section].find(i=>i.id===editingId);
+      Object.assign(item, vals);
+      showToast('Cambios guardados');
+    } else {
+      if(['anuncios','eventos','sermones','oficina'].includes(section)){
+        vals.autor = currentUser.name;
+        vals.autorMinisterio = currentUser.role === 'lider' ? getOwnMinisterio() : '';
+      }
+      state.data[section].unshift(Object.assign({ id:nextId() }, vals));
+      showToast('Elemento creado');
+    }
+    overlay.classList.add('hidden');
+    renderSection(section);
+  });
+
+  /* ===================== helpers ===================== */
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+  }
+  let toastTimer;
+  function showToast(msg){
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> el.classList.remove('show'), 2200);
+  }
+
+})();
+</script>
+</body>
+</html>
